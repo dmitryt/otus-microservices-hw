@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hw01-deployment
+  namespace: hw01
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: hw01-app
+  template:
+    metadata:
+      labels:
+        app: hw01-app
+    spec:
+      containers:
+        - name: hw01-app-service
+          image: greml1n/otus-microservices-hw01:v0.0.1
+          ports:
+            - name: web
+              containerPort: 8000
+          readinessProbe:
+            httpGet:
+              port: 8000
+              path: /health
+            initialDelaySeconds: 10
+            periodSeconds: 5
