@@ -17,6 +17,7 @@
     "lint": "npm run eslint && npm run check-types",
     "test": "jest --coverage",
     "prettier": "prettier --config .prettierrc --write .",
+    "e2e": "newman run Users_API.postman_collection.json",
     "test:watch": "jest --watch"
   },
   "keywords": [],
@@ -46,6 +47,7 @@
     "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-config-prettier": "~8.5",
     "install": "^0.13.0",
+    "newman": "^5.3.2",
     "npm": "^8.12.1",
     "postgrator-cli": "^6.0.0",
     "prettier": "~2.6",

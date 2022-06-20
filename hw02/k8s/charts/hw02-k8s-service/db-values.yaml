@@ -1,0 +1,4 @@
+fullnameOverride: hw02user
+postgresqlUsername: hw02user
+postgresqlPassword: hw02pass
+postgresqlDatabase: hw02

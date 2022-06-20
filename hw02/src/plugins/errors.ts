@@ -11,14 +11,16 @@ export const errorHandler = (app: FastifyInstance) =>
     if (error instanceof ValidationError) {
       statusCode = 400;
     }
+    let { message } = error;
     if (statusCode < 500) {
       app.log.info(error);
     } else {
       app.log.error(error);
+      message = 'Something went wrong';
     }
-    res.status(statusCode).send({
+    res.status(200).send({
       code: statusCode,
-      message: error.message,
+      message,
     });
   };
 

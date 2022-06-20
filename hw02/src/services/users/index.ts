@@ -1,15 +1,19 @@
 import { FastifyInstance } from 'fastify';
-import { getUser, createUser } from './handlers';
-import { newUserSchema } from './schema';
+import { getUser, getUsers, createUser, deleteUser, updateUser } from './handlers';
+import userSchema from './schema';
 
 const routes = async (app: FastifyInstance) => {
-  app.get('/:id', getUser(app));
+  app.get('/', { handler: getUsers(app) });
+  app.get('/:id', { handler: getUser(app) });
+  app.delete('/:id', { handler: deleteUser(app) });
   app.post('/', {
     handler: createUser(app),
-    schema: { body: newUserSchema },
+    schema: { body: userSchema },
   });
-  app.put('/:id', () => ({ 'name': 'John' }));
-  app.delete('/:id', () => ({ 'name': 'John' }));
+  app.put('/:id', {
+    handler: updateUser(app),
+    schema: { body: userSchema },
+  });
 };
 
 export default routes;

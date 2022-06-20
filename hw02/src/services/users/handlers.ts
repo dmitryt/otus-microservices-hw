@@ -1,28 +1,51 @@
-import { PoolClient } from 'pg';
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import { PoolClient } from 'pg';
 import SQL from 'sql-template-strings';
-import { createDbError } from '../../plugins/errors';
+import { createNotFoundError } from '../../plugins/errors';
 
-const connectToDb = async (app: FastifyInstance): Promise<PoolClient> => {
+const getByIdOr404 = async (client: PoolClient, id: string) => {
+  const { rows } = await client.query(
+    SQL`SELECT id, username, email, phone FROM users WHERE id=${id}`,
+  );
+  if (rows.length === 0) {
+    throw createNotFoundError();
+  }
+  return rows[0];
+};
+
+export const getUsers = (app: FastifyInstance) => async (req: FastifyRequest<any>, res: FastifyReply) => {
+  const client = await app.pg.connect();
   try {
-    const result = await app.pg.connect();
-    return result;
-  } catch (e) {
-    app.log.error(e);
-    throw createDbError('Error, cannot connect to DB');
+    const { rows } = await client.query(
+      SQL`SELECT id, username, email, phone FROM users`,
+    );
+    res.send(rows);
+  } finally {
+    // Release the client immediately after query resolves, or upon error
+    client.release();
   }
 };
 
 export const getUser = (app: FastifyInstance) => async (req: FastifyRequest<any>, res: FastifyReply) => {
-  const client = await connectToDb(app);
+  const client = await app.pg.connect();
   try {
-    const { rows } = await client.query(
-      SQL`SELECT id, username, email, phone FROM users WHERE id=${req.params.id}`,
+    const item = await getByIdOr404(client, req.params.id);
+    res.send(item);
+  } finally {
+    // Release the client immediately after query resolves, or upon error
+    client.release();
+  }
+};
+
+export const deleteUser = (app: FastifyInstance) => async (req: FastifyRequest<any>, res: FastifyReply) => {
+  const client = await app.pg.connect();
+  try {
+    await getByIdOr404(client, req.params.id);
+    await client.query(
+      SQL`DELETE FROM users WHERE id=${req.params.id}`,
     );
-    res.send(rows[0]);
-  } catch (e) {
-    app.log.error(e);
-    throw new Error('Error, while getting the user');
+    const code = 204;
+    res.send({ code, message: '' });
   } finally {
     // Release the client immediately after query resolves, or upon error
     client.release();
@@ -30,18 +53,24 @@ export const getUser = (app: FastifyInstance) => async (req: FastifyRequest<any>
 };
 
 export const createUser = (app: FastifyInstance) => async (req: FastifyRequest<any>, res: FastifyReply) => {
-  try {
-    const result = await app.pg.transact(async client => {
-      const {username, email, phone} = req.body;
-      const { rows: inserted } = await client.query(SQL`INSERT INTO users(username, email, phone) VALUES(${username}, ${email}, ${phone}) RETURNING id`);
-      const { rows } = await client.query(
-        SQL`SELECT id, username, email, phone FROM users WHERE id=${inserted[0].id}`,
-      );
-      return rows[0];
-    });
-    res.send(result);
-  } catch (e) {
-    app.log.error(e);
-    throw new Error('Error, while creating the user');
-  }
+  const result = await app.pg.transact(async client => {
+    const {username, email, phone} = req.body;
+    const query = SQL`INSERT INTO users(username, email, phone) VALUES(${username}, ${email}, ${phone}) RETURNING id, username, email, phone`
+    app.log.info(`INSERT QUERY: ${query}`);
+    const { rows } = await client.query(query);
+    return rows[0];
+  });
+  res.send(result);
+};
+
+export const updateUser = (app: FastifyInstance) => async (req: FastifyRequest<any>, res: FastifyReply) => {
+  const result = await app.pg.transact(async client => {
+    await getByIdOr404(client, req.params.id);
+    const {username, email, phone} = req.body;
+    const query = SQL`UPDATE users SET username=${username}, email=${email}, phone=${phone} WHERE id=${req.params.id} RETURNING id, username, email, phone`;
+    app.log.info(`UPDATE QUERY: ${query}`);
+    const { rows } = await client.query(query);
+    return rows[0];
+  });
+  res.send(result);
 };
