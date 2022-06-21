@@ -13,4 +13,4 @@ COPY . .
 RUN npm prune --production
 RUN chmod +x /app/entrypoint.sh
 
-ENTRYPOINT [ "/app/entrypoint.sh" ]
+ENTRYPOINT /app/entrypoint.sh

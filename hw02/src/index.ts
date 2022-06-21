@@ -1,9 +1,5 @@
-process.env.NODE_CONFIG_DIR = `${__dirname}/config`;
-/* eslint-disable import/first, import/order */
-const config = require('config');
-
 import Fastify from 'fastify';
-import Joi from 'joi';
+import config from './config';
 import initRoutes from './routes';
 import initPlugins from './plugins';
 
@@ -19,7 +15,7 @@ const appVersion = 'v1';
  * Run the server!
  */
 const start = async () => {
-  await initPlugins(fastify, config);
+  await initPlugins(fastify);
   await initRoutes(fastify, { appVersion });
   try {
     await fastify.listen({ port: config.port, host: config.host });

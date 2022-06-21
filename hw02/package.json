@@ -29,14 +29,12 @@
   "dependencies": {
     "@fastify/error": "^3.0.0",
     "@fastify/postgres": "^5.0.0",
-    "config": "^3.3.7",
     "fastify": "^4.0.1",
     "joi": "^17.6.0",
     "pg": "^8.7.3",
     "sql-template-strings": "^2.2.2"
   },
   "devDependencies": {
-    "@types/config": "^0.0.41",
     "@types/jest": "~27.5",
     "@types/node": "^16.11.39",
     "@types/pg": "^8.6.5",

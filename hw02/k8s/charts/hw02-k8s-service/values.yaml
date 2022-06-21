@@ -8,7 +8,7 @@ image:
   repository: greml1n/otus-microservices-hw02
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "v0.0.1"
+  tag: "v0.0.8"
 
 imagePullSecrets: []
 
@@ -92,7 +92,7 @@ config:
   namespace: hw02
 
 env:
-  HOST: localhost
+  HOST: 0.0.0.0
   PORT: 8000
   DB_NAME: hw02
   DB_HOST: postgres

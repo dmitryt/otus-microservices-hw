@@ -55,7 +55,7 @@ export const deleteUser = (app: FastifyInstance) => async (req: FastifyRequest<a
 export const createUser = (app: FastifyInstance) => async (req: FastifyRequest<any>, res: FastifyReply) => {
   const result = await app.pg.transact(async client => {
     const {username, email, phone} = req.body;
-    const query = SQL`INSERT INTO users(username, email, phone) VALUES(${username}, ${email}, ${phone}) RETURNING id, username, email, phone`
+    const query = SQL`INSERT INTO users(username, email, phone) VALUES(${username}, ${email}, ${phone}) RETURNING id, username, email, phone`;
     app.log.info(`INSERT QUERY: ${query}`);
     const { rows } = await client.query(query);
     return rows[0];
