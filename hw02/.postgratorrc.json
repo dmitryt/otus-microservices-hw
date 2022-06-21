@@ -1,0 +1,9 @@
+{
+  "migrationPattern": "migrations/*",
+  "driver": "pg",
+  "host": "localhost",
+  "port": 5433,
+  "database": "hw02",
+  "username": "hw02_user",
+  "password": "hw02_pass"
+}

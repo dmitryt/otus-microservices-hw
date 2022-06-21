@@ -1,0 +1,19 @@
+{
+  "name": "hw01",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "postgrator migrate"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "engines": {
+    "node": ">= 16"
+  },
+  "dependencies": {
+    "pg": "^8.7.3",
+    "postgrator-cli": "^6.0.0"
+  }
+}
