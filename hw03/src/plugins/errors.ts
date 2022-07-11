@@ -18,23 +18,28 @@ export const errorHandler = (app: FastifyInstance) =>
       app.log.error(error);
       message = 'Something went wrong';
     }
-    res.status(200).send({
+    res.status(statusCode).send({
       code: statusCode,
       message,
     });
   };
 
-export const createNotFoundError = () => {
-  const Error = createError('NOT_FOUND', 'Not Found', 404);
+export const createNotFoundError = (msg: string) => {
+  const Error = createError('NOT_FOUND', msg, 404);
   return new Error();
 };
 
 export const notFoundErrorHandler = (app: FastifyInstance) => {
   const handler = errorHandler(app);
-  return (req: FastifyRequest<any>, res: FastifyReply) => handler(createNotFoundError(), req, res);
+  return (req: FastifyRequest<any>, res: FastifyReply) => handler(createNotFoundError(`${req.url} not found`), req, res);
 };
 
 export const createDbError = (msg: string) => {
   const Error = createError('DB_ERROR', msg, 500);
+  return new Error();
+};
+
+export const createUnhandledError = (msg: string) => {
+  const Error = createError('UNHANDLED_ERROR', msg, 500);
   return new Error();
 };

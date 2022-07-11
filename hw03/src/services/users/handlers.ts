@@ -1,19 +1,22 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { PoolClient } from 'pg';
 import SQL from 'sql-template-strings';
-import { createNotFoundError } from '../../plugins/errors';
+import { createNotFoundError, createUnhandledError } from '../../plugins/errors';
 
 const getByIdOr404 = async (client: PoolClient, id: string) => {
   const { rows } = await client.query(
     SQL`SELECT id, username, email, phone FROM users WHERE id=${id}`,
   );
   if (rows.length === 0) {
-    throw createNotFoundError();
+    throw createNotFoundError(`User ${id} was not found`);
   }
   return rows[0];
 };
 
 export const getUsers = (app: FastifyInstance) => async (req: FastifyRequest<any>, res: FastifyReply) => {
+  if (req.query.withRandomErrors && Math.random() < 0.25) {
+    throw createUnhandledError('Something went wrong');
+  }
   const client = await app.pg.connect();
   try {
     const { rows } = await client.query(

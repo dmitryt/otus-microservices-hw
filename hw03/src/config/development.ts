@@ -7,8 +7,8 @@ const cfg: IConfig = {
   db: {
     host: 'localhost',
     port: 5433,
-    user: 'hw02_user',
-    pass: 'hw02_pass',
+    user: 'hw02user',
+    pass: 'hw02pass',
     dbName: 'hw02',
   },
 };
