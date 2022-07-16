@@ -6,7 +6,7 @@ NAMESPACE="hw05"
 CHART_DIR="k8s/charts/hw05-k8s-service"
 
 function usage {
-    echo "Usage: hw02-k8s-service {start|stop|installDB|dropDB|test}"
+    echo "Usage: hw05-k8s-service {start|stop|installDB|dropDB|test}"
     exit 1
 }
 
@@ -38,6 +38,12 @@ function stopService {
     echo "Stopping service....Done"
 }
 
+function portForward {
+    echo "Set port forward...."
+    kubectl port-forward service/prod-hw05-k8s-service 8001:8000 --namespace $NAMESPACE &
+    echo "Set port forward....Done"
+}
+
 function runTests {
   npm run e2e
 }
@@ -48,5 +54,6 @@ case $1 in
   start) startService ;;
   stop) stopService ;;
   test) runTests ;;
+  portForward) portForward ;;
   *) usage ;;
 esac
