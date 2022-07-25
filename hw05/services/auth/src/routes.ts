@@ -8,7 +8,7 @@ interface IOptions {
 }
 
 const init = async (app: FastifyInstance, {rootPath}: IOptions) => {
-  await app.register(Auth, { prefix: `${rootPath}/auth`});
+  await app.register(Auth, { prefix: rootPath});
   await app.register(Health, { prefix: `${rootPath}/health`});
 };
 

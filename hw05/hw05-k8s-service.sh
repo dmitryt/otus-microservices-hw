@@ -32,6 +32,21 @@ function startService {
     echo "Starting service....Done"
 }
 
+function startApiGateway {
+    echo "Installing ApiGateway...."
+    helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+    helm upgrade --install --version "3.35.0" --namespace $NAMESPACE -f $CHART_DIR/nginx.yaml \
+      ingress-nginx ingress-nginx/ingress-nginx
+    echo "Installing ApiGateway....Done"
+}
+
+function stopApiGateway {
+    echo "Stopping ApiGateway...."
+    helm uninstall --namespace $NAMESPACE -f $CHART_DIR/nginx.yaml \
+      ingress-nginx ingress-nginx/ingress-nginx
+    echo "Stopping ApiGateway....Done"
+}
+
 function stopService {
     echo "Stopping service...."
     helm uninstall --namespace $NAMESPACE $RELEASE_NAME
@@ -45,7 +60,7 @@ function portForward {
 }
 
 function runTests {
-  npm run e2e
+  cd services/users && npm run e2e && cd ../../
 }
 
 case $1 in
@@ -55,5 +70,7 @@ case $1 in
   stop) stopService ;;
   test) runTests ;;
   portForward) portForward ;;
+  startApiGateway) startApiGateway ;;
+  stopApiGateway) stopApiGateway ;;
   *) usage ;;
 esac

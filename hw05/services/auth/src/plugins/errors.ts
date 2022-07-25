@@ -2,8 +2,7 @@ import {
   FastifyError, FastifyInstance, FastifyReply, FastifyRequest
 } from 'fastify';
 import { ValidationError } from 'joi';
-
-const createError = require('@fastify/error');
+import createError from '@fastify/error';
 
 export const errorHandler = (app: FastifyInstance) =>
   (error: FastifyError, req: FastifyRequest<any>, res: FastifyReply) => {

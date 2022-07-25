@@ -4,11 +4,17 @@
 
 replicaCount: 2
 
-image:
-  repository: greml1n/otus-microservices-hw02
+usersImage:
+  repository: greml1n/otus-microservices-hw05
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "v0.0.8"
+  tag: "v0.0.1"
+
+authImage:
+  repository: greml1n/otus-microservices-auth-hw05
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "v0.0.1"
 
 imagePullSecrets: []
 

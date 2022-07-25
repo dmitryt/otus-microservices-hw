@@ -3,7 +3,7 @@ import { IConfig } from './types';
 const cfg: IConfig = {
   secret: 'devsecretdevsecretdevsecretdevsecretdevsecretdevsecret',
   host: 'localhost',
-  port: 8000,
+  port: 8002,
 
   db: {
     host: 'localhost',

@@ -2,16 +2,16 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: {{.Values.config.namespace}}
-  name: {{ include "users-service.fullname" . }}
+  name: {{ include "auth-service.fullname" . }}
   labels:
-    {{- include "users-service.labels" . | nindent 4 }}
+    {{- include "auth-service.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "users-service.selectorLabels" . | nindent 6 }}
+      {{- include "auth-service.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -19,7 +19,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "users-service.selectorLabels" . | nindent 8 }}
+        {{- include "auth-service.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -31,8 +31,8 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.authImage.repository }}:{{ .Values.authImage.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.authImage.pullPolicy }}
           ports:
             - name: http
               containerPort: {{ .Values.deployment.containerPort }}

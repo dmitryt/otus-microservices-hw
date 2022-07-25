@@ -1,8 +1,11 @@
 import crypto from 'crypto';
+import Joi from 'joi';
 import { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import UserModel from '../models/user';
 import config from '../config';
 import { createForbiddenError, createValidationError } from '../plugins/errors';
+
+const phoneRegexp = /^(?:(?:\(?(?:00|\+)([1-4]\d\d|[1-9]\d?)\)?)?[-. \\/]?)?((?:\(?\d{1,}\)?[-. \\/]?){0,})(?:[-. \\/]?(?:#|ext\.?|extension|x)[-. \\/]?(\d+))?$/;
 
 const saltPassword = (password: string, salt: string) => {
   const hash = crypto.createHmac('sha512', salt);
@@ -24,48 +27,57 @@ interface IRegisterRequest {
   phone?: string;
 }
 
-const isString = (data: any): boolean => typeof data === 'string';
+const RegisterSchema = {
+  body: Joi.object().keys({
+    username: Joi.string().required(),
+    password: Joi.string().required(),
+    first_name: Joi.string(),
+    last_name: Joi.string(),
+    email: Joi.string().email({ minDomainSegments: 2 }).message('Must be valid email'),
+    phone: Joi.string().pattern(phoneRegexp).message('Must be valid phone')
+  }).required()
+};
 
-const checkLoginRequest = (data: any): data is ILoginRequest => {
-  return isString(data?.username) && isString(data?.password);
-}
-
-const checkRegisterRequest = (data: any): data is IRegisterRequest => {
-  return isString(data?.username) &&
-    isString(data?.password) &&
-    isString(data?.firstName || '') &&
-    isString(data?.lastName || '') &&
-    isString(data?.email || '') &&
-    isString(data?.phone || '');
-}
+const LoginSchema = {
+  body: Joi.object().keys({
+    username: Joi.string().required(),
+    password: Joi.string().required(),
+  }).required()
+};
 
 const routes = async (app: FastifyInstance) => {
-  app.post('/signup', async (req: FastifyRequest, res: FastifyReply) => {
+  app.post('/signup', {
+    schema: RegisterSchema,
+    validatorCompiler: ({ schema }) => {
+      return data => (schema as any).validate(data);
+    },
+  }, async (req: FastifyRequest, res: FastifyReply) => {
+    const payload = req.body as IRegisterRequest;
     const model = new UserModel(app.pg, app.log);
-    if (!checkRegisterRequest(req.body)) {
-      throw createValidationError('Not all required parameters were provided');
-    }
-    const userInDb = await model.findByUserName(req.body.username);
+    const userInDb = await model.findByUserName(payload.username);
     if (userInDb) {
       throw createValidationError('User with such username already exists');
     }
     const user = await model.create({
-      ...req.body,
-      password: saltPassword(req.body.password, config.secret),
+      ...payload,
+      password: saltPassword(payload.password, config.secret),
     });
     const { password, ...rest } = user;
-    res.send({ ...rest });
+    res.send(rest);
   });
-  app.post('/signin', async (req: FastifyRequest, res: FastifyReply) => {
+  app.post('/signin', {
+    schema: LoginSchema,
+    validatorCompiler: ({ schema }) => {
+      return data => (schema as any).validate(data);
+    },
+  }, async (req: FastifyRequest, res: FastifyReply) => {
     const model = new UserModel(app.pg, app.log);
-    if (!checkLoginRequest(req.body)) {
-      throw createValidationError('Username or password was not provided');
-    }
-    const user = await model.findByUserName(req.body.username);
-    if (!user || user.password !== saltPassword(req.body.password, config.secret)) {
+    const payload = req.body as ILoginRequest;
+    const user = await model.findByUserName(payload.username);
+    if (!user || user.password !== saltPassword(payload.password, config.secret)) {
       throw createForbiddenError('Username or password is invalid');
     }
-    const token = await res.jwtSign({ id: user.id, username: user.username }, { sign: { expiresIn: '1m' }});
+    const token = await res.jwtSign({ id: user.id, username: user.username }, { sign: { expiresIn: '1h' }});
     res.send({ token });
   });
 };

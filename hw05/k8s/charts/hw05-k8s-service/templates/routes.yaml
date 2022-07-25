@@ -1,0 +1,34 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "users-service.fullname" . }}
+spec:
+  rules:
+    - http:
+        paths:
+          - path: / # redirect requests to users service
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "users-service.fullname" . }}
+                port:
+                  number: 8000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "auth-service.fullname" . }}
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /auth(/|$)(.*) # redirect requests to auth service
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "auth-service.fullname" . }}
+                port:
+                  number: 8000
