@@ -21,9 +21,12 @@ The following scenario should be implemented:
 
 ## Solution
 
+![Diagram](diagram.png?raw=true "Diagram")
+
 **It's supposed, there are Helm3, Minikube installed on your machine.**
 
 ### Usage
+#### Run Application
 1. Add rights for executing *.sh file
 ```bash
 chmod +x hw05-k8s-service.sh
@@ -39,16 +42,18 @@ chmod +x hw05-k8s-service.sh
 ```bash
 ./hw05-k8s-service.sh startApiGateway
 ```
-4. Run tests (It's supposed, Newman is installed on your machine.). Tests work with `arch.homework` URL.
+5. Run tests (It's supposed, Newman is installed on your machine.). Tests work with `arch.homework` URL.
 Please, update your `/etc/hosts` file before running tests. To get the external IP, please run the command `minikube service -n hw05 ingress-nginx-controller`
 ```bash
 ./hw05-k8s-service.sh test
 ```
+
+#### Stop Application
 1. Stop application.
 ```bash
 ./hw05-k8s-service.sh stop
 ```
-6. Uninstall database
+2. Uninstall database
 ```bash
 ./hw05-k8s-service.sh dropDB
 ```

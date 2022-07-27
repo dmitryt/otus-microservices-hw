@@ -71,9 +71,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{authUrl}}/v1/signup",
+					"raw": "{{baseUrl}}/v1/signup",
 					"host": [
-						"{{authUrl}}"
+						"{{baseUrl}}"
 					],
 					"path": [
 						"v1",
@@ -148,9 +148,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{authUrl}}/v1/signup",
+					"raw": "{{baseUrl}}/v1/signup",
 					"host": [
-						"{{authUrl}}"
+						"{{baseUrl}}"
 					],
 					"path": [
 						"v1",
@@ -222,9 +222,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{authUrl}}/v1/signin",
+					"raw": "{{baseUrl}}/v1/signin",
 					"host": [
-						"{{authUrl}}"
+						"{{baseUrl}}"
 					],
 					"path": [
 						"v1",
@@ -296,9 +296,9 @@
 					}
 				},
 				"url": {
-					"raw": "{{authUrl}}/v1/signin",
+					"raw": "{{baseUrl}}/v1/signin",
 					"host": [
-						"{{authUrl}}"
+						"{{baseUrl}}"
 					],
 					"path": [
 						"v1",
@@ -667,16 +667,11 @@
 	"variable": [
 		{
 			"key": "baseUrl",
-			"value": "http://localhost:8003"
+			"value": "http://arch.homework"
 		},
 		{
 			"key": "userId",
 			"value": ""
-		},
-		{
-			"key": "authUrl",
-			"value": "http://localhost:8002",
-			"type": "string"
 		},
 		{
 			"key": "usersCounter",
