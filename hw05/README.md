@@ -44,6 +44,16 @@ chmod +x hw05-k8s-service.sh
 ```
 5. Run tests (It's supposed, Newman is installed on your machine.). Tests work with `arch.homework` URL.
 Please, update your `/etc/hosts` file before running tests. To get the external IP, please run the command `minikube service -n hw05 ingress-nginx-controller`
+
+As nginx-ingress Api Gateway is used, but /etc/hosts doesn't support port notation, we need to replace
+`arch.homework` domain with required IP adress(should be adjusted to work under Linux):
+
+```bash
+sed -i '' -e 's/arch.homework/192.168.64.15:32080/g' Users_API.postman_collection.json
+```
+
+To run tests:
+
 ```bash
 ./hw05-k8s-service.sh test
 ```

@@ -60,7 +60,7 @@ function portForward {
 }
 
 function runTests {
-  cd services/users && npm run e2e && cd ../../
+  newman run Users_API.postman_collection.json
 }
 
 case $1 in
