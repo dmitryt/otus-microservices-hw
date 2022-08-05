@@ -1,6 +1,5 @@
 import { PostgresDb } from "@fastify/postgres";
 import { FastifyLoggerInstance } from "fastify";
-import SQL from 'sql-template-strings';
 import { generateInsertSQLRequest, generateUpdateSQLRequest } from "../util";
 
 const tableName = 'balances';
@@ -30,13 +29,6 @@ class BalanceModel {
       const { rows } = await client.query(...query);
       return rows[0];
     });
-  }
-
-  async findByUserName(username: string) {
-    const { rows } = await this.pg.query(
-      SQL`SELECT * FROM users WHERE username=${username}`,
-    );
-    return rows[0];
   }
 }
 

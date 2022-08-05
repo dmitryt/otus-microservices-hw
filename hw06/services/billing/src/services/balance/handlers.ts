@@ -3,7 +3,7 @@ import { PoolClient } from 'pg';
 import SQL from 'sql-template-strings';
 import BalanceModel from '../../models/balance';
 import { createNotFoundError } from '../../plugins/errors';
-import { IUserModel } from './schema';
+import { IUserModel, IBalancePayload } from './schema';
 
 const getByIdOr404 = async (client: PoolClient, id: string) => {
   const { rows } = await client.query(
@@ -28,9 +28,19 @@ export const getBalance = (app: FastifyInstance) => async (req: FastifyRequest<a
 
 export const updateBalance = (app: FastifyInstance) => async (req: FastifyRequest<any>, res: FastifyReply) => {
   const result = await app.pg.transact(async client => {
-    const balance = await getByIdOr404(client, (req.user as IUserModel).id);
     const model = new BalanceModel(app.pg, app.log);
-    return model.update(req.body, balance.id);
+    const userId = (req.user as IUserModel).id;
+    const payload = req.body as IBalancePayload;
+    try {
+      const balance = await getByIdOr404(client, userId);
+      return model.update({...payload, amount: payload.amount + balance.amount}, balance.id);
+    } catch (e) {
+      if ((e as Error).name === 'NOT_FOUND') {
+        // Create balance, when it doesn't exist
+        return model.create({...payload, user_id: userId});
+      }
+      throw e;
+    }
   });
   res.send(result);
 };
