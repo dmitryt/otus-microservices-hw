@@ -1,6 +1,3 @@
-image:
-  debug: true
-
 primary:
   fullname: postgres
   initdb:

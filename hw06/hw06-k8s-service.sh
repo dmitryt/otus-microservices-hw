@@ -2,6 +2,7 @@
 
 RELEASE_NAME="prod"
 PG_RELEASE_NAME="pg"
+RABBIT_RELEASE_NAME="rabbit"
 NAMESPACE="hw06"
 CHART_DIR="k8s/charts/hw06-k8s-service"
 
@@ -22,6 +23,20 @@ function dropDB {
     echo "Dropping Postgres...."
     helm uninstall --namespace $NAMESPACE $PG_RELEASE_NAME
     echo "Dropping Postgres....Done"
+}
+
+function installRabbitMq {
+    echo "Installing Namespace...."
+    kubectl create namespace $NAMESPACE
+    echo "Installing and starting RabbitMQ...."
+    helm upgrade --install $RABBIT_RELEASE_NAME --namespace $NAMESPACE bitnami/rabbitmq -f $CHART_DIR/rabbit-mq-values.yaml
+    echo "Installing and starting RabbitMQ....Done"
+}
+
+function dropRabbitMq {
+    echo "Dropping RabbitMQ...."
+    helm uninstall --namespace $NAMESPACE $RABBIT_RELEASE_NAME
+    echo "Dropping RabbitMQ....Done"
 }
 
 function startService {
@@ -72,5 +87,7 @@ case $1 in
   portForward) portForward ;;
   startApiGateway) startApiGateway ;;
   stopApiGateway) stopApiGateway ;;
+  installRabbitMq) installRabbitMq ;;
+  dropRabbitMq) dropRabbitMq ;;
   *) usage ;;
 esac
