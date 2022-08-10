@@ -21,6 +21,10 @@ const cfg: IConfig =  {
     port: parseInt(AMQP_PORT, 10),
     user: AMQP_USER,
     pass: AMQP_PASS,
+    queues: {
+      users: 'users',
+      orders: 'orders',
+    },
     vhost: '',
   },
 };
