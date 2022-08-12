@@ -65,31 +65,37 @@ const routes = async (app: FastifyInstance) => {
     });
     const { password, ...rest } = user;
 
-    const replyTo = `${config.amqp.queues.users}-reply`;
     const correlationId = uuidv4();
 
     const { channel, connection } = app.amqp;
-    channel.assertQueue('', {
+    const sendResponse = (payload: any) => {
+      connection.close();
+      res.send(payload);
+    };
+    const replyQueue = await channel.assertQueue('', {
       exclusive: true
     });
+    app.log.debug(`Generated ${replyQueue.queue} queue`);
     channel.sendToQueue(
       config.amqp.queues.users,
       Buffer.from(JSON.stringify({})),
-      { correlationId, replyTo }
+      { correlationId, replyTo: replyQueue.queue }
     );
 
-    channel.consume(replyTo, (msg: any) => {
-      if (msg.properties.correlationId == correlationId) {
-        app.log.info(`Got ${msg.content.toString()}`);
-        setTimeout(function() {
-          connection.close();
-          res.send(rest);
-        }, 500);
-      }
-    }, {
-      noAck: true
-    });
+    const msg = await new Promise((resolve) => {
+      channel.consume(replyQueue.queue, (msg: any) => {
+        app.log.debug(`Received msg ${JSON.stringify(msg)}`);
+        if (msg.properties.correlationId == correlationId) {
+          resolve(msg);
+        }
+      }, {
+        noAck: true
+      });
+    }) as any;
 
+    app.log.info(`Got ${msg.content.toString()}`);
+
+    sendResponse(rest);
   });
   app.post('/signin', {
     schema: LoginSchema,

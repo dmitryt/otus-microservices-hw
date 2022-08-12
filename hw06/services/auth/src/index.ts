@@ -4,7 +4,9 @@ import initRoutes from './routes';
 import initPlugins from './plugins';
 
 const fastify = Fastify({
-  logger: true
+  logger: {
+    level: 'debug',
+  }
 });
 
 const rootPath = '/v1';
