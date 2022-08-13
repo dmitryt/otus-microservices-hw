@@ -12,6 +12,9 @@ interface IAmqpConfig {
   user: string;
   pass: string;
   vhost?: string;
+  queues: {
+    [key: string]: string;
+  };
 }
 
 export interface IConfig {

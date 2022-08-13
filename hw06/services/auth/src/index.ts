@@ -5,7 +5,7 @@ import initPlugins from './plugins';
 
 const fastify = Fastify({
   logger: {
-    level: 'debug',
+    level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
   }
 });
 

@@ -65,27 +65,25 @@ const routes = async (app: FastifyInstance) => {
     });
     const { password, ...rest } = user;
 
+    app.log.debug(`User created ${JSON.stringify(user)}`);
+
     const correlationId = uuidv4();
 
-    const { channel, connection } = app.amqp;
-    const sendResponse = (payload: any) => {
-      connection.close();
-      res.send(payload);
-    };
+    const { channel } = app.amqp;
     const replyQueue = await channel.assertQueue('', {
       exclusive: true
     });
-    app.log.debug(`Generated ${replyQueue.queue} queue`);
+
     channel.sendToQueue(
       config.amqp.queues.users,
-      Buffer.from(JSON.stringify({})),
+      Buffer.from(JSON.stringify({ eventType: 'USER_CREATED', payload: { userId: user.id } })),
       { correlationId, replyTo: replyQueue.queue }
     );
 
     const msg = await new Promise((resolve) => {
       channel.consume(replyQueue.queue, (msg: any) => {
         app.log.debug(`Received msg ${JSON.stringify(msg)}`);
-        if (msg.properties.correlationId == correlationId) {
+        if (msg.properties.correlationId === correlationId) {
           resolve(msg);
         }
       }, {
@@ -93,9 +91,10 @@ const routes = async (app: FastifyInstance) => {
       });
     }) as any;
 
-    app.log.info(`Got ${msg.content.toString()}`);
+    app.log.debug(`Got ${msg.content.toString()}`);
+    const { balance } = JSON.parse(msg.content.toString());
 
-    sendResponse(rest);
+    res.send({...rest, balance });
   });
   app.post('/signin', {
     schema: LoginSchema,

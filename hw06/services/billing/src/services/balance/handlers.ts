@@ -31,16 +31,8 @@ export const updateBalance = (app: FastifyInstance) => async (req: FastifyReques
     const model = new BalanceModel(app.pg, app.log);
     const userId = (req.user as IUserModel).id;
     const payload = req.body as IBalancePayload;
-    try {
-      const balance = await getByIdOr404(client, userId);
-      return model.update({...payload, amount: payload.amount + balance.amount}, balance.id);
-    } catch (e) {
-      if ((e as Error).name === 'NOT_FOUND') {
-        // Create balance, when it doesn't exist
-        return model.create({...payload, user_id: userId});
-      }
-      throw e;
-    }
+    const balance = await getByIdOr404(client, userId);
+    return model.update({ ...payload, balance: payload.amount + balance.balance }, balance.id);
   });
   res.send(result);
 };

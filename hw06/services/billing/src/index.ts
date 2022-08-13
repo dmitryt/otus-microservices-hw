@@ -4,7 +4,9 @@ import initRoutes from './routes';
 import initPlugins from './plugins';
 
 const fastify = Fastify({
-  logger: true
+  logger: {
+    level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+  }
 });
 
 const appVersion = 'v1';

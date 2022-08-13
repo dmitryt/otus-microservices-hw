@@ -4,7 +4,7 @@ import { generateInsertSQLRequest, generateUpdateSQLRequest } from "../util";
 
 const tableName = 'balances';
 const updatePayloadFields = [
-  'amount',
+  'balance',
 ];
 const insertPayloadFields = [
   'user_id', ...updatePayloadFields,

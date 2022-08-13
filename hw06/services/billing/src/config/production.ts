@@ -22,6 +22,10 @@ const cfg: IConfig =  {
     user: AMQP_USER,
     pass: AMQP_PASS,
     vhost: '',
+    queues: {
+      users: 'users',
+      orders: 'orders',
+    },
   },
 };
 

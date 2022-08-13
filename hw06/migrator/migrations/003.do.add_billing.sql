@@ -8,7 +8,7 @@ CREATE TABLE items
 
 CREATE TABLE balances (
   id      SERIAL PRIMARY KEY NOT NULL,
-  user_id int NOT NULL,
+  user_id int NOT NULL UNIQUE,
   balance   DOUBLE PRECISION NOT NULL,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW(),
@@ -33,3 +33,9 @@ CREATE TABLE orders_items (
   FOREIGN KEY (order_id) REFERENCES orders(id) ON UPDATE CASCADE,
   FOREIGN KEY (item_id) REFERENCES items(id) ON UPDATE CASCADE
 );
+
+INSERT INTO items (title, price) VALUES ('Iron', 100);
+INSERT INTO items (title, price) VALUES ('Smart Watch', 200);
+INSERT INTO items (title, price) VALUES ('TV', 300);
+INSERT INTO items (title, price) VALUES ('Washing mashine', 400);
+INSERT INTO items (title, price) VALUES ('Laptop', 500);

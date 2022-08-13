@@ -18,6 +18,10 @@ const cfg: IConfig = {
     user: 'hw06user',
     pass: 'hw06pass',
     vhost: '',
+    queues: {
+      users: 'users',
+      orders: 'orders',
+    },
   },
 };
 

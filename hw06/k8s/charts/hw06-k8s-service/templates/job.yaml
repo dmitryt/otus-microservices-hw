@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
       - name: migrator
-        image: greml1n/otus-microservices-hw06-migrator:v0.0.1
+        image: greml1n/otus-microservices-hw06-migrator:v0.0.5
         envFrom:
           - configMapRef:
               name: {{.Values.config.env}}
