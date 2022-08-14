@@ -15,7 +15,7 @@ const subscribeToQueue = (app: FastifyInstance, queueName: string, handlers: IAm
     app.log.debug(`Received in "${queueName}": "${msg.content.toString()}"`);
     const { eventType, payload } = JSON.parse(msg.content.toString());
     const handler = handlers[eventType];
-    app.log.debug(`EVENT TYPE ${eventType}`);
+    app.log.debug(`EVENT TYPE ${eventType}, handler ${handler}`);
     if (typeof handler === 'function') {
       const options = { correlationId: msg.properties.correlationId };
       const result = await handler(payload, options);

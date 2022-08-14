@@ -18,20 +18,27 @@ CREATE TABLE balances (
 CREATE TABLE orders (
   id      SERIAL PRIMARY KEY NOT NULL,
   user_id int NOT NULL,
-  price   DOUBLE PRECISION NOT NULL,
+  status   VARCHAR(100) NOT NULL,
   created_at TIMESTAMP DEFAULT NOW(),
-  updated_at TIMESTAMP DEFAULT NOW(),
+  purchased_at TIMESTAMP,
   FOREIGN KEY (user_id) REFERENCES users(id) ON UPDATE CASCADE
 );
 
 CREATE TABLE orders_items (
   order_id int NOT NULL ,
   item_id int NOT NULL,
-  created_at TIMESTAMP DEFAULT NOW(),
-  purchased_at TIMESTAMP DEFAULT NOW(),
+  price   DOUBLE PRECISION NOT NULL,
+  amount int NOT NULL,
   PRIMARY KEY (order_id, item_id),
   FOREIGN KEY (order_id) REFERENCES orders(id) ON UPDATE CASCADE,
   FOREIGN KEY (item_id) REFERENCES items(id) ON UPDATE CASCADE
+);
+
+CREATE TABLE notifications (
+  id      SERIAL PRIMARY KEY NOT NULL,
+  order_id int NOT NULL,
+  message VARCHAR(1000) NOT NULL,
+  FOREIGN KEY (order_id) REFERENCES orders(id) ON UPDATE CASCADE
 );
 
 INSERT INTO items (title, price) VALUES ('Iron', 100);

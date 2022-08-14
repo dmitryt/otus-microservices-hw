@@ -12,8 +12,6 @@ function usage {
 }
 
 function installDB {
-    echo "Installing Namespace...."
-    kubectl create namespace $NAMESPACE
     echo "Installing and starting Postgres...."
     helm upgrade --install $PG_RELEASE_NAME --namespace $NAMESPACE bitnami/postgresql -f $CHART_DIR/db-values.yaml
     echo "Installing and starting Postgres....Done"
@@ -42,6 +40,7 @@ function dropRabbitMq {
 function startService {
     echo "Installing Namespace...."
     kubectl create namespace $NAMESPACE
+    installDB
     echo "Starting service...."
     helm upgrade --install --namespace $NAMESPACE $RELEASE_NAME $CHART_DIR
     echo "Starting service....Done"
@@ -64,6 +63,7 @@ function stopApiGateway {
 
 function stopService {
     echo "Stopping service...."
+    dropDB
     helm uninstall --namespace $NAMESPACE $RELEASE_NAME
     echo "Stopping service....Done"
 }
