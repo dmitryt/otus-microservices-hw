@@ -1,0 +1,8 @@
+primary:
+  fullname: postgres
+  initdb:
+    scripts:
+      init.sql: |
+        CREATE USER hw02user WITH PASSWORD 'hw02pass';
+        CREATE DATABASE hw02;
+        GRANT ALL PRIVILEGES ON DATABASE hw02 TO hw02user;
