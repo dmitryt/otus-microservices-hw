@@ -24,8 +24,6 @@ function dropDB {
 }
 
 function installRabbitMq {
-    echo "Installing Namespace...."
-    kubectl create namespace $NAMESPACE
     echo "Installing and starting RabbitMQ...."
     helm upgrade --install $RABBIT_RELEASE_NAME --namespace $NAMESPACE bitnami/rabbitmq -f $CHART_DIR/rabbit-mq-values.yaml
     echo "Installing and starting RabbitMQ....Done"
@@ -41,6 +39,8 @@ function startService {
     echo "Installing Namespace...."
     kubectl create namespace $NAMESPACE
     installDB
+    installRabbitMq
+    startApiGateway
     echo "Starting service...."
     helm upgrade --install --namespace $NAMESPACE $RELEASE_NAME $CHART_DIR
     echo "Starting service....Done"
@@ -56,14 +56,15 @@ function startApiGateway {
 
 function stopApiGateway {
     echo "Stopping ApiGateway...."
-    helm uninstall --namespace $NAMESPACE -f $CHART_DIR/nginx.yaml \
-      ingress-nginx ingress-nginx/ingress-nginx
+    helm uninstall --namespace $NAMESPACE ingress-nginx
     echo "Stopping ApiGateway....Done"
 }
 
 function stopService {
     echo "Stopping service...."
     dropDB
+    dropRabbitMq
+    stopApiGateway
     helm uninstall --namespace $NAMESPACE $RELEASE_NAME
     echo "Stopping service....Done"
 }

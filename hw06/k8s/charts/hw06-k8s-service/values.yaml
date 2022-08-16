@@ -4,17 +4,29 @@
 
 replicaCount: 2
 
-usersImage:
-  repository: greml1n/otus-microservices-hw06
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "v0.0.2"
-
 authImage:
-  repository: greml1n/otus-microservices-auth-hw06
+  repository: greml1n/otus-microservices-hw06-auth
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "v0.0.2"
+  tag: "v0.0.1"
+
+ordersImage:
+  repository: greml1n/otus-microservices-hw06-orders
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "v0.0.1"
+
+billingImage:
+  repository: greml1n/otus-microservices-hw06-billing
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "v0.0.1"
+
+notificationsImage:
+  repository: greml1n/otus-microservices-hw06-notifications
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "v0.0.1"
 
 imagePullSecrets: []
 
@@ -103,6 +115,10 @@ env:
   DB_NAME: hw02
   DB_HOST: pg-postgresql
   DB_PORT: 5432
+  AMQP_HOST: rabbit-rabbitmq
+  AMQP_PORT: 5672
+  AMQP_USER: hw06user
+  AMQP_PASS: hw06pass
 secrets:
   DB_USER: hw02user
   DB_PASS: hw02pass

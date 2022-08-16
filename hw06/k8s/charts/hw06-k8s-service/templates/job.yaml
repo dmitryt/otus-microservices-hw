@@ -4,7 +4,7 @@ metadata:
   namespace: {{.Values.config.namespace}}
   name: migrator
   labels:
-    {{- include "users-service.labels" . | nindent 4 }}
+    {{- include "auth-service.labels" . | nindent 4 }}
 spec:
   template:
     spec:
