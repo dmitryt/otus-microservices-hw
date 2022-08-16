@@ -1,6 +1,7 @@
 import FastifyAmqp from 'fastify-amqp';
 import { FastifyInstance } from 'fastify';
 
+import initAmqpRoutes from '../amqp-routes';
 import config from '../config';
 
 const init = async (app: FastifyInstance) => {
@@ -12,6 +13,11 @@ const init = async (app: FastifyInstance) => {
     password: pass,
     vhost
   });
+
+  const amqpRoutes = initAmqpRoutes(app);
+  for (const initRoute of amqpRoutes) {
+    initRoute();
+  }
 };
 
 export default init;

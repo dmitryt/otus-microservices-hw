@@ -15,6 +15,9 @@ interface IAmqpConfig {
   queues: {
     [key: string]: string;
   };
+  exchanges: {
+    [key: string]: string;
+  };
 }
 
 export interface IConfig {

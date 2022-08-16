@@ -20,7 +20,9 @@ const cfg: IConfig = {
     vhost: '',
     queues: {
       users: 'users',
-      orders: 'orders',
+    },
+    exchanges: {
+      orders: 'ordersExchange',
     },
   },
 };

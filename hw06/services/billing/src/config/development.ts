@@ -22,6 +22,9 @@ const cfg: IConfig = {
       users: 'users',
       orders: 'orders',
     },
+    exchanges: {
+      orders: 'ordersExchange',
+    },
   },
 };
 

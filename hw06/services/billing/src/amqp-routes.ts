@@ -2,27 +2,27 @@ import { FastifyInstance } from 'fastify';
 import config from './config';
 import BalanceModel from './models/balance';
 import { getByUserIdOr404 } from './services/balance/handlers';
+import { sendToExchange, subscribeToExchange, subscribeToQueue } from './utils';
 
-const { queues } = config.amqp;
+type IOrderPayload = { userId: number, id: number, price: number };
 
-type IOrderPayload = { userId: number, orderId: number, price: number };
+export type IAmqpHandlers = {
+  [key: string]: ((msg: any, options: any) => Promise<any>) | undefined,
+};
 
-const init = (app: FastifyInstance) => ({
-  [queues.users]: {
-    USER_CREATED: async ({ userId }: { userId: string }) => {
+const initRoutes = (app: FastifyInstance) => [
+  function userCreated() {
+    const handler = async ({ userId }: { userId: string }) => {
       const model = new BalanceModel(app.pg, app.log);
       return model.create({ balance: 0, user_id: userId });
-    },
+    };
+    subscribeToQueue(app, config.amqp.queues.users, handler);
   },
-  [queues.orders]: {
-    ORDER_CREATED: async ({ userId, orderId, price }: IOrderPayload, { correlationId }: { correlationId: string}) => {
-      const { channel } = app.amqp;
-      const sendToQueue = (payload: any) => {
-        channel.sendToQueue(
-          config.amqp.queues.orders,
-          Buffer.from(JSON.stringify({ eventType: 'ORDER_PAID', payload })),
-          { correlationId }
-        );
+  function orderCreated() {
+    const exchange = config.amqp.exchanges.orders;
+    const handler = async ({ userId, id: orderId, price }: IOrderPayload) => {
+      const send = (payload: any) => {
+        sendToExchange(app, exchange, 'ORDER_PAID', payload);
       };
       await app.pg.transact(async client => {
         const model = new BalanceModel(app.pg, app.log);
@@ -30,22 +30,19 @@ const init = (app: FastifyInstance) => ({
           const balance = await getByUserIdOr404(client, userId);
           const newBalance = balance.balance - price;
           if (newBalance < 0) {
-            sendToQueue({ error: 'NOT_ENOUGH_MONEY', orderId, status: 'failed' });
+            send({ error: 'NOT_ENOUGH_MONEY', orderId, status: 'failed' });
             return;
           }
           await model.update({ balance: newBalance }, balance.id);
-          sendToQueue({ data: {}, orderId, status: 'success' });
+          send({ data: {}, orderId, status: 'success' });
         } catch (e) {
           app.log.error(e);
-          sendToQueue({ error: 'INTERNAL_SERVER_ERROR', orderId, status: 'failed' });
+          send({ error: 'INTERNAL_SERVER_ERROR', orderId, status: 'failed' });
         }
       });
-    },
-  },
-});
+    };
+    subscribeToExchange(app, exchange, ['ORDER_CREATED'], handler);
+  }
+];
 
-export type IAmqpHandlers = {
-  [key: string]: ((msg: any, options: any) => Promise<any>) | undefined,
-};
-
-export default init;
+export default initRoutes;

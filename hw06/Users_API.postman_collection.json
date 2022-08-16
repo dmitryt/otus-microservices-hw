@@ -1,735 +1,785 @@
 {
-  "info": {
-    "_postman_id": "c586ca06-a05a-4a91-82fb-aa6f0f92f623",
-    "name": "Users API",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "16198250"
-  },
-  "item": [
-    {
-      "name": "Register User 1",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "var json = pm.response.json();",
-              "var userSchema = {",
-              "  type: \"object\",",
-              "  properties: {",
-              "    id: {type: \"integer\"},",
-              "    username: {type: \"string\"},",
-              "    email: {type: \"string\"},",
-              "    phone: {type: \"string\"},",
-              "    first_name: {type: \"string\"},",
-              "    last_name: {type: \"string\"},",
-              "  },",
-              "  required: [\"id\", \"username\"],",
-              "  additionalProperties: false,",
-              "};",
-              "",
-              "console.log('REQUEST', pm.request.body.raw);",
-              "console.log('RESPONSE', JSON.stringify(json));",
-              "",
-              "pm.test(\"Status code is 200\", function () {",
-              "    pm.response.to.have.status(200);",
-              "});",
-              "",
-              "pm.test(\"Content-Type header is application/json\", () => {",
-              "  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
-              "});",
-              "",
-              "pm.test(\"Response contains user object\", () => {",
-              "  pm.expect(tv4.validate(json, userSchema)).to.eql(true);",
-              "  var usersCounter = parseInt(pm.collectionVariables.get(\"usersCounter\"), 10);",
-              "pm.collectionVariables.set(\"user\" + usersCounter, request.data); ",
-              "  pm.collectionVariables.set(\"usersCounter\", usersCounter + 1);",
-              "});",
-              "",
-              "postman.setNextRequest('Get User Profile w/o auth');"
-            ],
-            "type": "text/javascript"
-          }
-        },
-        {
-          "listen": "prerequest",
-          "script": {
-            "exec": [
-              ""
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\"username\": \"{{$randomUserName}}\", \"password\": \"{{$randomPassword}}\", \"email\": \"{{$randomEmail}}\", \"phone\": \"{{$randomPhoneNumber}}\", \"first_name\": \"{{$randomFirstName}}\", \"last_name\": \"{{$randomLastName}}\"}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{baseUrl}}/auth/v1/signup",
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "path": [
-            "auth",
-            "v1",
-            "signup"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Register User 2",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "var json = pm.response.json();",
-              "var userSchema = {",
-              "  type: \"object\",",
-              "  properties: {",
-              "    id: {type: \"integer\"},",
-              "    username: {type: \"string\"},",
-              "    email: {type: \"string\"},",
-              "    phone: {type: \"string\"},",
-              "    first_name: {type: \"string\"},",
-              "    last_name: {type: \"string\"},",
-              "  },",
-              "  required: [\"id\", \"username\"],",
-              "  additionalProperties: false,",
-              "};",
-              "",
-              "console.log('REQUEST', pm.request.body.raw);",
-              "console.log('RESPONSE', JSON.stringify(json));",
-              "",
-              "pm.test(\"Status code is 200\", function () {",
-              "    pm.response.to.have.status(200);",
-              "});",
-              "",
-              "pm.test(\"Content-Type header is application/json\", () => {",
-              "  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
-              "});",
-              "",
-              "pm.test(\"Response contains user object\", () => {",
-              "  pm.expect(tv4.validate(json, userSchema)).to.eql(true);",
-              "  var usersCounter = parseInt(pm.collectionVariables.get(\"usersCounter\"), 10);",
-              "pm.collectionVariables.set(\"user\" + usersCounter, request.data); ",
-              "  pm.collectionVariables.set(\"usersCounter\", usersCounter + 1);",
-              "});",
-              "",
-              "postman.setNextRequest('Login User 2');"
-            ],
-            "type": "text/javascript"
-          }
-        },
-        {
-          "listen": "prerequest",
-          "script": {
-            "exec": [
-              ""
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\"username\": \"{{$randomUserName}}\", \"password\": \"{{$randomPassword}}\", \"email\": \"{{$randomEmail}}\", \"phone\": \"{{$randomPhoneNumber}}\", \"first_name\": \"{{$randomFirstName}}\", \"last_name\": \"{{$randomLastName}}\"}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{baseUrl}}/auth/v1/signup",
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "path": [
-            "auth",
-            "v1",
-            "signup"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Login User 1",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "var json = pm.response.json();",
-              "var loginSchema = {",
-              "  type: \"object\",",
-              "  properties: {",
-              "    token: {type: \"string\"}",
-              "  },",
-              "  required: [\"token\"],",
-              "  additionalProperties: false,",
-              "};",
-              "",
-              "console.log('REQUEST', pm.request.body.raw);",
-              "console.log('RESPONSE', JSON.stringify(json));",
-              "",
-              "pm.test(\"Status code is 200\", function () {",
-              "    pm.response.to.have.status(200);",
-              "});",
-              "",
-              "pm.test(\"Content-Type header is application/json\", () => {",
-              "  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
-              "});",
-              "",
-              "pm.test(\"Response contains token\", () => {",
-              "  var json = pm.response.json();",
-              "  pm.expect(tv4.validate(json, loginSchema)).to.eql(true);",
-              "  pm.collectionVariables.set(\"currentUsername\", pm.variables.get(\"username\"));",
-              "  pm.collectionVariables.set(\"currentUserToken\", json.token);",
-              "});",
-              "",
-              "postman.setNextRequest('Change User 1 Profile with auth');"
-            ],
-            "type": "text/javascript"
-          }
-        },
-        {
-          "listen": "prerequest",
-          "script": {
-            "exec": [
-              "var user1 = JSON.parse(pm.collectionVariables.get(\"user1\"));",
-              "pm.variables.set(\"username\", user1.username);",
-              "pm.variables.set(\"password\", user1.password);"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\"username\": \"{{username}}\", \"password\": \"{{password}}\"}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{baseUrl}}/auth/v1/signin",
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "path": [
-            "auth",
-            "v1",
-            "signin"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Login User 2",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "var json = pm.response.json();",
-              "var loginSchema = {",
-              "  type: \"object\",",
-              "  properties: {",
-              "    token: {type: \"string\"}",
-              "  },",
-              "  required: [\"token\"],",
-              "  additionalProperties: false,",
-              "};",
-              "",
-              "console.log('REQUEST', pm.request.body.raw);",
-              "console.log('RESPONSE', JSON.stringify(json));",
-              "",
-              "pm.test(\"Status code is 200\", function () {",
-              "    pm.response.to.have.status(200);",
-              "});",
-              "",
-              "pm.test(\"Content-Type header is application/json\", () => {",
-              "  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
-              "});",
-              "",
-              "pm.test(\"Response contains token\", () => {",
-              "  var json = pm.response.json();",
-              "  pm.expect(tv4.validate(json, loginSchema)).to.eql(true);",
-              "  pm.collectionVariables.set(\"currentUsername\", pm.variables.get(\"username\"));",
-              "  pm.collectionVariables.set(\"currentUserToken\", json.token);",
-              "});",
-              "",
-              "postman.setNextRequest('Change User 2 Profile with auth');"
-            ],
-            "type": "text/javascript"
-          }
-        },
-        {
-          "listen": "prerequest",
-          "script": {
-            "exec": [
-              "var user2 = JSON.parse(pm.collectionVariables.get(\"user2\"));",
-              "pm.variables.set(\"username\", user2.username);",
-              "pm.variables.set(\"password\", user2.password);"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\"username\": \"{{username}}\", \"password\": \"{{password}}\"}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{baseUrl}}/auth/v1/signin",
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "path": [
-            "auth",
-            "v1",
-            "signin"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Get User Profile w/o auth",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "var json = pm.response.json();",
-              "var userSchema = {",
-              "  type: \"object\",",
-              "  properties: {",
-              "    id: {type: \"integer\"},",
-              "    username: {type: \"string\"},",
-              "    email: {type: \"string\"},",
-              "    phone: {type: \"string\"},",
-              "  },",
-              "  required: [\"id\", \"username\"],",
-              "  additionalProperties: false,",
-              "};",
-              "",
-              "console.log('RESPONSE', JSON.stringify(json));",
-              "",
-              "pm.test(\"Status code is 200, but response code is 401\", function () {",
-              "    pm.response.to.have.status(200);",
-              "    pm.expect(pm.response.json().code).to.eql(401);",
-              "});",
-              "",
-              "pm.test(\"Content-Type header is application/json\", () => {",
-              "  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
-              "});",
-              "",
-              "postman.setNextRequest('Login User 1');"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/api/v1/profile",
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "path": [
-            "api",
-            "v1",
-            "profile"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Get User Profile with auth",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "var json = pm.response.json();",
-              "var userSchema = {",
-              "  type: \"object\",",
-              "  properties: {",
-              "    id: {type: \"integer\"},",
-              "    username: {type: \"string\"},",
-              "    email: {type: \"string\"},",
-              "    phone: {type: \"string\"},",
-              "  },",
-              "  required: [\"id\", \"username\"],",
-              "  additionalProperties: false,",
-              "};",
-              "",
-              "console.log('RESPONSE', JSON.stringify(json));",
-              "",
-              "pm.test(\"Status code is 200\", function () {",
-              "    pm.response.to.have.status(200);",
-              "});",
-              "",
-              "pm.test(\"Content-Type header is application/json\", () => {",
-              "  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
-              "});",
-              "",
-              "pm.test(\"Response contains user object\", () => {",
-              "  const userId = pm.collectionVariables.get(\"userId\");",
-              "  pm.expect(tv4.validate(json, userSchema)).to.eql(true);",
-              "  pm.expect(json.id).to.eql(userId);",
-              "});",
-              "",
-              "postman.setNextRequest('Register User 2');"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "{{baseUrl}}/api/v1/users/{{userId}}",
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "path": [
-            "api",
-            "v1",
-            "users",
-            "{{userId}}"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Change User Profile w/o auth",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "var json = pm.response.json();",
-              "",
-              "console.log('REQUEST', pm.request.body.raw);",
-              "console.log('RESPONSE', JSON.stringify(json));",
-              "",
-              "pm.test(\"Status code is 200\", function () {",
-              "    pm.response.to.have.status(200);",
-              "});",
-              "",
-              "pm.test(\"Content-Type header is application/json\", () => {",
-              "  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
-              "});",
-              "",
-              "pm.test(\"Api Code is 401\", function () {",
-              "    pm.expect(json).to.have.property('code', 401);",
-              "});",
-              "",
-              "postman.setNextRequest('Update User');"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "method": "PUT",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\"phone\": \"{{$randomPhoneNumber}}\"}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{baseUrl}}/api/v1/profile",
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "path": [
-            "api",
-            "v1",
-            "profile"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Change User 1 Profile with auth",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "var json = pm.response.json();",
-              "var userSchema = {",
-              "  type: \"object\",",
-              "  properties: {",
-              "    first_name: {type: \"string\"},",
-              "    last_name: {type: \"string\"},",
-              "    email: {type: \"string\"},",
-              "    phone: {type: \"string\"},",
-              "  },",
-              "  additionalProperties: true,",
-              "};",
-              "",
-              "console.log('REQUEST', pm.request.body.raw);",
-              "console.log('RESPONSE', JSON.stringify(json));",
-              "",
-              "pm.test(\"Status code is 200\", function () {",
-              "    pm.response.to.have.status(200);",
-              "});",
-              "",
-              "pm.test(\"Content-Type header is application/json\", () => {",
-              "  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
-              "});",
-              "",
-              "pm.test(\"Response contains user object\", () => {",
-              "  pm.expect(tv4.validate(json, userSchema)).to.eql(true);",
-              "});",
-              "",
-              "pm.test(\"Response contains user1 object\", () => {",
-              "  const user1 = pm.collectionVariables.get(\"user1\");",
-              "  pm.expect(json.username).to.eql(JSON.parse(user1).username);",
-              "});",
-              "",
-              "postman.setNextRequest('Register User 2');"
-            ],
-            "type": "text/javascript"
-          }
-        },
-        {
-          "listen": "prerequest",
-          "script": {
-            "exec": [
-              ""
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{currentUserToken}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "PUT",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\"email\": \"{{$randomEmail}}\", \"phone\": \"{{$randomPhoneNumber}}\", \"first_name\": \"{{$randomFirstName}}\", \"last_name\": \"{{$randomLastName}}\"}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{baseUrl}}/api/v1/profile",
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "path": [
-            "api",
-            "v1",
-            "profile"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Change User 2 Profile with auth",
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "var json = pm.response.json();",
-              "var userSchema = {",
-              "  type: \"object\",",
-              "  properties: {",
-              "    first_name: {type: \"string\"},",
-              "    last_name: {type: \"string\"},",
-              "    email: {type: \"string\"},",
-              "    phone: {type: \"string\"},",
-              "  },",
-              "  additionalProperties: true,",
-              "};",
-              "",
-              "console.log('REQUEST', pm.request.body.raw);",
-              "console.log('RESPONSE', JSON.stringify(json));",
-              "",
-              "pm.test(\"Status code is 200\", function () {",
-              "    pm.response.to.have.status(200);",
-              "});",
-              "",
-              "pm.test(\"Content-Type header is application/json\", () => {",
-              "  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
-              "});",
-              "",
-              "pm.test(\"Response contains user object\", () => {",
-              "  pm.expect(tv4.validate(json, userSchema)).to.eql(true);",
-              "});",
-              "",
-              "pm.test(\"Response contains user2 object\", () => {",
-              "  const user2 = pm.collectionVariables.get(\"user2\");",
-              "  pm.expect(json.username).to.eql(JSON.parse(user2).username);",
-              "});"
-            ],
-            "type": "text/javascript"
-          }
-        },
-        {
-          "listen": "prerequest",
-          "script": {
-            "exec": [
-              ""
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ],
-      "request": {
-        "auth": {
-          "type": "bearer",
-          "bearer": [
-            {
-              "key": "token",
-              "value": "{{currentUserToken}}",
-              "type": "string"
-            }
-          ]
-        },
-        "method": "PUT",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\"email\": \"{{$randomEmail}}\", \"phone\": \"{{$randomPhoneNumber}}\", \"first_name\": \"{{$randomFirstName}}\", \"last_name\": \"{{$randomLastName}}\"}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{baseUrl}}/api/v1/profile",
-          "host": [
-            "{{baseUrl}}"
-          ],
-          "path": [
-            "api",
-            "v1",
-            "profile"
-          ]
-        }
-      },
-      "response": []
-    }
-  ],
-  "event": [
-    {
-      "listen": "prerequest",
-      "script": {
-        "type": "text/javascript",
-        "exec": [
-          ""
-        ]
-      }
-    },
-    {
-      "listen": "test",
-      "script": {
-        "type": "text/javascript",
-        "exec": [
-          ""
-        ]
-      }
-    }
-  ],
-  "variable": [
-    {
-      "key": "baseUrl",
-      "value": "http://arch.homework"
-    },
-    {
-      "key": "userId",
-      "value": ""
-    },
-    {
-      "key": "usersCounter",
-      "value": "1",
-      "type": "string"
-    },
-    {
-      "key": "user1",
-      "value": ""
-    },
-    {
-      "key": "user2",
-      "value": ""
-    },
-    {
-      "key": "currentUsername",
-      "value": ""
-    },
-    {
-      "key": "currentUserToken",
-      "value": ""
-    },
-    {
-      "key": "user3",
-      "value": ""
-    },
-    {
-      "key": "user4",
-      "value": ""
-    }
-  ]
+	"info": {
+		"_postman_id": "26b890ee-0f2a-4744-b76c-ce71cef7350a",
+		"name": "Users API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16198250"
+	},
+	"item": [
+		{
+			"name": "Register User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json = pm.response.json();",
+							"var userSchema = {",
+							"  type: \"object\",",
+							"  properties: {",
+							"    id: {type: \"integer\"},",
+							"    username: {type: \"string\"},",
+							"    email: {type: \"string\"},",
+							"    phone: {type: \"string\"},",
+							"    first_name: {type: \"string\"},",
+							"    last_name: {type: \"string\"},",
+							"    balance: {type: \"integer\"},",
+							"  },",
+							"  required: [\"id\", \"username\"],",
+							"  additionalProperties: false,",
+							"};",
+							"",
+							"console.log('REQUEST', pm.request.body.raw);",
+							"console.log('RESPONSE', JSON.stringify(json));",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type header is application/json\", () => {",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
+							"});",
+							"",
+							"pm.test(\"Response contains user object\", () => {",
+							"  pm.expect(tv4.validate(json, userSchema)).to.eql(true);",
+							"pm.collectionVariables.set(\"user\", request.data); ",
+							"});",
+							"",
+							"postman.setNextRequest('Login User');"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"{{$randomUserName}}\", \"password\": \"{{$randomPassword}}\", \"email\": \"{{$randomEmail}}\", \"phone\": \"{{$randomPhoneNumber}}\", \"first_name\": \"{{$randomFirstName}}\", \"last_name\": \"{{$randomLastName}}\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{authUrl}}/v1/signup",
+					"host": [
+						"{{authUrl}}"
+					],
+					"path": [
+						"v1",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json = pm.response.json();",
+							"var loginSchema = {",
+							"  type: \"object\",",
+							"  properties: {",
+							"    token: {type: \"string\"}",
+							"  },",
+							"  required: [\"token\"],",
+							"  additionalProperties: false,",
+							"};",
+							"",
+							"console.log('REQUEST', pm.request.body.raw);",
+							"console.log('RESPONSE', JSON.stringify(json));",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type header is application/json\", () => {",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
+							"});",
+							"",
+							"pm.test(\"Response contains token\", () => {",
+							"  var json = pm.response.json();",
+							"  pm.expect(tv4.validate(json, loginSchema)).to.eql(true);",
+							"  pm.collectionVariables.set(\"currentUsername\", pm.variables.get(\"username\"));",
+							"  pm.collectionVariables.set(\"currentUserToken\", json.token);",
+							"});",
+							"",
+							"postman.setNextRequest('Update User balance');"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var user1 = JSON.parse(pm.collectionVariables.get(\"user\"));",
+							"pm.variables.set(\"username\", user1.username);",
+							"pm.variables.set(\"password\", user1.password);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"{{username}}\", \"password\": \"{{password}}\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{authUrl}}/v1/signin",
+					"host": [
+						"{{authUrl}}"
+					],
+					"path": [
+						"v1",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check balance after first payment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json = pm.response.json();",
+							"var userSchema = {",
+							"  type: \"object\",",
+							"  properties: {",
+							"    id: {type: \"integer\"},",
+							"    user_id: {type: \"integer\"},",
+							"    balance: {type: \"integer\"},",
+							"  },",
+							"  required: [\"id\", \"user_id\", \"balance\"],",
+							"  additionalProperties: true,",
+							"};",
+							"",
+							"console.log('RESPONSE', JSON.stringify(json));",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type header is application/json\", () => {",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
+							"});",
+							"",
+							"pm.test(\"Validate response\", () => {",
+							"  var json = pm.response.json();",
+							"  pm.expect(tv4.validate(json, userSchema)).to.eql(true);",
+							"});",
+							"",
+							"pm.test(\"Balance was received correctly for user\", () => {",
+							"  var json = pm.response.json();",
+							"  var userBalance = pm.collectionVariables.get(\"userBalance\");",
+							"  var orderPrice = pm.collectionVariables.get(\"orderPrice\");",
+							"  pm.expect(userBalance - orderPrice).to.eql(json.balance);",
+							"  pm.collectionVariables.set(\"userBalance\", userBalance - orderPrice);",
+							"});",
+							"",
+							"postman.setNextRequest('Check notification after first payment');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{currentUserToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{billingUrl}}/api/v1/balance",
+					"host": [
+						"{{billingUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"balance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check balance after second payment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json = pm.response.json();",
+							"var userSchema = {",
+							"  type: \"object\",",
+							"  properties: {",
+							"    id: {type: \"integer\"},",
+							"    user_id: {type: \"integer\"},",
+							"    balance: {type: \"integer\"},",
+							"  },",
+							"  required: [\"id\", \"user_id\", \"balance\"],",
+							"  additionalProperties: true,",
+							"};",
+							"",
+							"console.log('RESPONSE', JSON.stringify(json));",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type header is application/json\", () => {",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
+							"});",
+							"",
+							"pm.test(\"Balance was not changed\", () => {",
+							"  var json = pm.response.json();",
+							"  pm.expect(tv4.validate(json, userSchema)).to.eql(true);",
+							"  var userBalance = pm.collectionVariables.get(\"userBalance\");",
+							"  pm.expect(userBalance).to.eql(json.balance);",
+							"});",
+							"",
+							"postman.setNextRequest('Check notification after second payment');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{currentUserToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{billingUrl}}/api/v1/balance",
+					"host": [
+						"{{billingUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"balance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check notification after first payment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json = pm.response.json();",
+							"var notificationSchema = {",
+							"  type: \"object\",",
+							"  properties: {",
+							"    id: {type: \"integer\"},",
+							"    order_id: {type: \"integer\"},",
+							"    message: {type: \"string\"},",
+							"  },",
+							"  required: [\"id\", \"order_id\", \"message\"],",
+							"  additionalProperties: true,",
+							"};",
+							"",
+							"console.log('RESPONSE', JSON.stringify(json));",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type header is application/json\", () => {",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
+							"});",
+							"",
+							"pm.test(\"Notification was received correctly for user\", () => {",
+							"  var json = pm.response.json();",
+							"  pm.expect(tv4.validate(json, notificationSchema)).to.eql(true);",
+							"  var orderId = pm.collectionVariables.get(\"orderId\");",
+							"  pm.expect(json.order_id).to.eql(orderId);",
+							"  pm.expect(json.message).to.eql(`Order ${orderId} was paid successfully`);",
+							"});",
+							"",
+							"postman.setNextRequest('Create order with not enough amount of money');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{currentUserToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{notificationsUrl}}/api/v1/notifications/{{orderId}}",
+					"host": [
+						"{{notificationsUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"notifications",
+						"{{orderId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User balance",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json = pm.response.json();",
+							"var userSchema = {",
+							"  type: \"object\",",
+							"  properties: {",
+							"    id: {type: \"integer\"},",
+							"    user_id: {type: \"integer\"},",
+							"    balance: {type: \"integer\"},",
+							"  },",
+							"  required: [\"id\", \"user_id\", \"balance\"],",
+							"  additionalProperties: true,",
+							"};",
+							"",
+							"console.log('REQUEST', pm.request.body.raw);",
+							"console.log('RESPONSE', JSON.stringify(json));",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type header is application/json\", () => {",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
+							"});",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Balance was updated correctly for user\", () => {",
+							"  var json = pm.response.json();",
+							"  pm.expect(tv4.validate(json, userSchema)).to.eql(true);",
+							"  pm.collectionVariables.set(\"userBalance\", json.balance);",
+							"});",
+							"",
+							"postman.setNextRequest('Create order with enough amount of money');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{currentUserToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"amount\": 1000}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{billingUrl}}/api/v1/balance",
+					"host": [
+						"{{billingUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"balance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create order with enough amount of money",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json = pm.response.json();",
+							"",
+							"var orderSchema = {",
+							"  type: \"object\",",
+							"  properties: {",
+							"    id: {type: \"integer\"},",
+							"    price: {type: \"integer\"},",
+							"    userId: {type: \"integer\"},",
+							"    items: {",
+							"        type: \"array\",",
+							"        items: [{",
+							"            properties: {",
+							"                id: {type: \"integer\"},",
+							"                amount: {type: \"integer\"},",
+							"                price: {type: \"integer\"},",
+							"            }",
+							"        }]",
+							"    },",
+							"  },",
+							"  required: [\"id\", \"userId\", \"price\"],",
+							"  additionalProperties: true,",
+							"};",
+							"",
+							"console.log('REQUEST', pm.request.body.raw);",
+							"console.log('RESPONSE', JSON.stringify(json));",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type header is application/json\", () => {",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
+							"});",
+							"",
+							"pm.test(\"Check result\", () => {",
+							"  var json = pm.response.json();",
+							"  pm.expect(tv4.validate(json, orderSchema)).to.eql(true);",
+							"  pm.collectionVariables.set(\"orderPrice\", json.price);",
+							"  pm.collectionVariables.set(\"orderId\", json.id);",
+							"",
+							"  // Artificial delay to allow updating the balance",
+							"  setTimeout(function(){}, 1000);",
+							"});",
+							"",
+							"postman.setNextRequest('Check balance after first payment');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{currentUserToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"items\": [{\"id\": 1, \"amount\": 1}, {\"id\": 2, \"amount\": 2}, {\"id\": 3, \"amount\": 1}]}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ordersUrl}}/api/v1/orders",
+					"host": [
+						"{{ordersUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create order with not enough amount of money",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json = pm.response.json();",
+							"",
+							"var orderSchema = {",
+							"  type: \"object\",",
+							"  properties: {",
+							"    id: {type: \"integer\"},",
+							"    price: {type: \"integer\"},",
+							"    userId: {type: \"integer\"},",
+							"    items: {",
+							"        type: \"array\",",
+							"        items: [{",
+							"            properties: {",
+							"                id: {type: \"integer\"},",
+							"                amount: {type: \"integer\"},",
+							"                price: {type: \"integer\"},",
+							"            }",
+							"        }]",
+							"    },",
+							"  },",
+							"  required: [\"id\", \"userId\", \"price\"],",
+							"  additionalProperties: true,",
+							"};",
+							"",
+							"console.log('REQUEST', pm.request.body.raw);",
+							"console.log('RESPONSE', JSON.stringify(json));",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type header is application/json\", () => {",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
+							"});",
+							"",
+							"pm.test(\"Check result\", () => {",
+							"  var json = pm.response.json();",
+							"  pm.expect(tv4.validate(json, orderSchema)).to.eql(true);",
+							"  pm.collectionVariables.set(\"orderPrice\", json.price);",
+							"  pm.collectionVariables.set(\"orderId\", json.id);",
+							"});",
+							"",
+							"postman.setNextRequest('Check balance after second payment');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{currentUserToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"items\": [{\"id\": 1, \"amount\": 1}, {\"id\": 2, \"amount\": 2}, {\"id\": 3, \"amount\": 1}]}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ordersUrl}}/api/v1/orders",
+					"host": [
+						"{{ordersUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check notification after second payment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json = pm.response.json();",
+							"var notificationSchema = {",
+							"  type: \"object\",",
+							"  properties: {",
+							"    id: {type: \"integer\"},",
+							"    order_id: {type: \"integer\"},",
+							"    message: {type: \"string\"},",
+							"  },",
+							"  required: [\"id\", \"order_id\", \"message\"],",
+							"  additionalProperties: true,",
+							"};",
+							"",
+							"console.log('RESPONSE', JSON.stringify(json));",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type header is application/json\", () => {",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
+							"});",
+							"",
+							"pm.test(\"Notification was received correctly for user\", () => {",
+							"  var json = pm.response.json();",
+							"  pm.expect(tv4.validate(json, notificationSchema)).to.eql(true);",
+							"  var orderId = pm.collectionVariables.get(\"orderId\");",
+							"  pm.expect(json.order_id).to.eql(orderId);",
+							"  pm.expect(json.message).to.eql(`There was a following error during paying for the order ${orderId}: NOT_ENOUGH_MONEY`);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{currentUserToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{notificationsUrl}}/api/v1/notifications/{{orderId}}",
+					"host": [
+						"{{notificationsUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"notifications",
+						"{{orderId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://arch.homework"
+		},
+		{
+			"key": "authUrl",
+			"value": "http://localhost:8002",
+			"type": "string"
+		},
+		{
+			"key": "user",
+			"value": ""
+		},
+		{
+			"key": "billingUrl",
+			"value": "http://localhost:8003",
+			"type": "string"
+		},
+		{
+			"key": "currentUsername",
+			"value": ""
+		},
+		{
+			"key": "currentUserToken",
+			"value": ""
+		},
+		{
+			"key": "ordersUrl",
+			"value": "http://localhost:8004",
+			"type": "string"
+		},
+		{
+			"key": "userBalance",
+			"value": ""
+		},
+		{
+			"key": "orderPrice",
+			"value": ""
+		},
+		{
+			"key": "orderId",
+			"value": ""
+		},
+		{
+			"key": "notificationsUrl",
+			"value": "http://localhost:8005",
+			"type": "string"
+		}
+	]
 }

@@ -1,9 +1,8 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { FastifyInstance } from '../../plugins';
-import { IUserModel } from './schema';
 
 export const getNotifications = (app: FastifyInstance) => async (req: FastifyRequest<any>, res: FastifyReply) => {
-  const userId = (req.user as IUserModel).id;
-  const result = await app.knex!('notifications').where({ user_id: userId });
-  res.send(result);
+  const orderId = (req.params as any).orderId;
+  const result = await app.knex!('notifications').where({ order_id: orderId });
+  res.send(result[0]);
 };

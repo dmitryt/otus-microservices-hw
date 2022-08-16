@@ -1,13 +1,13 @@
 import config from './config';
 import { FastifyInstance } from './plugins';
+import { subscribeToExchange } from './utils';
 
-const { queues } = config.amqp;
+type IOrderPayload = { status: string, orderId: number, error?: string };
 
-type IOrderPayload = { orderId: number, status: string, error?: string };
-
-const init = (app: FastifyInstance) => ({
-  [queues.orders]: {
-    ORDER_PAID: async ({ orderId, status, error }: IOrderPayload ) => {
+const initRoutes = (app: FastifyInstance) => [
+  function orderPaid() {
+    const exchange = config.amqp.exchanges.orders;
+    const handler = async ({ orderId, status, error }: IOrderPayload ) => {
       const genMessage = () => {
         if (status === 'success') {
           return `Order ${orderId} was paid successfully`;
@@ -15,12 +15,10 @@ const init = (app: FastifyInstance) => ({
         return `There was a following error during paying for the order ${orderId}: ${error}`;
       };
       await app.knex!('notifications').insert({ order_id: orderId, message: genMessage() });
-    },
-  },
-});
+    }
 
-export type IAmqpHandlers = {
-  [key: string]: ((msg: any, options: any) => Promise<any>) | undefined,
-};
+    subscribeToExchange(app, exchange, ['ORDER_PAID'], handler);
+  }
+];
 
-export default init;
+export default initRoutes;

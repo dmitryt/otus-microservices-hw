@@ -2,7 +2,7 @@ import { FastifyInstance } from '../../plugins';
 import { getNotifications } from './handlers';
 
 const routes = async (app: FastifyInstance) => {
-  app.get('/', {
+  app.get('/:orderId', {
     handler: getNotifications(app),
   });
 };

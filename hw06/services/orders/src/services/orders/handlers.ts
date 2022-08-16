@@ -2,6 +2,7 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import { v4 as uuidv4 } from 'uuid';
 import config from '../../config';
 import { FastifyInstance } from '../../plugins';
+import { sendToExchange } from '../../utils';
 import { IUserModel, IOrderPayload } from './schema';
 
 export const createOrder = (app: FastifyInstance) => async (req: FastifyRequest<any>, res: FastifyReply) => {
@@ -61,13 +62,6 @@ export const createOrder = (app: FastifyInstance) => async (req: FastifyRequest<
     items: [...acc.items, { id: item_id, amount, price }],
   }), { items: [], price: 0 });
 
-  const { channel } = app.amqp;
-
-  channel.assertExchange(config.amqp.queues.orders, 'direct', {
-    durable: false
-  });
-
-  channel.publish(config.amqp.queues.orders, 'ORDER_CREATED', Buffer.from(convertedResult));
-
+  sendToExchange(app, config.amqp.exchanges.orders, 'ORDER_CREATED', convertedResult);
   res.send(convertedResult);
 };
