@@ -1,0 +1,76 @@
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "auth-service.fullname" . }}
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /auth(/|$)(.*) # redirect requests to auth service
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "auth-service.fullname" . }}
+                port:
+                  number: 8000
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "orders-service.fullname" . }}
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /orders(/|$)(.*) # redirect requests to auth service
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "orders-service.fullname" . }}
+                port:
+                  number: 8000
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "billing-service.fullname" . }}
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /billing(/|$)(.*) # redirect requests to auth service
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "billing-service.fullname" . }}
+                port:
+                  number: 8000
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "notifications-service.fullname" . }}
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+    - http:
+        paths:
+          - path: /notifications(/|$)(.*) # redirect requests to auth service
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "notifications-service.fullname" . }}
+                port:
+                  number: 8000
