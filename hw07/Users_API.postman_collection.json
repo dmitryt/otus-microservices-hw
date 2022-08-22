@@ -163,221 +163,6 @@
 			"response": []
 		},
 		{
-			"name": "Check balance after first payment",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"var json = pm.response.json();",
-							"var userSchema = {",
-							"  type: \"object\",",
-							"  properties: {",
-							"    id: {type: \"integer\"},",
-							"    user_id: {type: \"integer\"},",
-							"    balance: {type: \"integer\"},",
-							"  },",
-							"  required: [\"id\", \"user_id\", \"balance\"],",
-							"  additionalProperties: true,",
-							"};",
-							"",
-							"console.log('RESPONSE', JSON.stringify(json));",
-							"",
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"",
-							"pm.test(\"Content-Type header is application/json\", () => {",
-							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
-							"});",
-							"",
-							"pm.test(\"Validate response\", () => {",
-							"  var json = pm.response.json();",
-							"  pm.expect(tv4.validate(json, userSchema)).to.eql(true);",
-							"});",
-							"",
-							"pm.test(\"Balance was received correctly for user\", () => {",
-							"  var json = pm.response.json();",
-							"  var userBalance = pm.collectionVariables.get(\"userBalance\");",
-							"  var orderPrice = pm.collectionVariables.get(\"orderPrice\");",
-							"  pm.expect(userBalance - orderPrice).to.eql(json.balance);",
-							"  pm.collectionVariables.set(\"userBalance\", userBalance - orderPrice);",
-							"});",
-							"",
-							"postman.setNextRequest('Check notification after first payment');"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{currentUserToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{billingUrl}}/api/v1/balance",
-					"host": [
-						"{{billingUrl}}"
-					],
-					"path": [
-						"api",
-						"v1",
-						"balance"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Check balance after second payment",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"var json = pm.response.json();",
-							"var userSchema = {",
-							"  type: \"object\",",
-							"  properties: {",
-							"    id: {type: \"integer\"},",
-							"    user_id: {type: \"integer\"},",
-							"    balance: {type: \"integer\"},",
-							"  },",
-							"  required: [\"id\", \"user_id\", \"balance\"],",
-							"  additionalProperties: true,",
-							"};",
-							"",
-							"console.log('RESPONSE', JSON.stringify(json));",
-							"",
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"",
-							"pm.test(\"Content-Type header is application/json\", () => {",
-							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
-							"});",
-							"",
-							"pm.test(\"Balance was not changed\", () => {",
-							"  var json = pm.response.json();",
-							"  pm.expect(tv4.validate(json, userSchema)).to.eql(true);",
-							"  var userBalance = pm.collectionVariables.get(\"userBalance\");",
-							"  pm.expect(userBalance).to.eql(json.balance);",
-							"});",
-							"",
-							"postman.setNextRequest('Check notification after second payment');"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{currentUserToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{billingUrl}}/api/v1/balance",
-					"host": [
-						"{{billingUrl}}"
-					],
-					"path": [
-						"api",
-						"v1",
-						"balance"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Check notification after first payment",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"var json = pm.response.json();",
-							"var notificationSchema = {",
-							"  type: \"object\",",
-							"  properties: {",
-							"    id: {type: \"integer\"},",
-							"    order_id: {type: \"integer\"},",
-							"    message: {type: \"string\"},",
-							"  },",
-							"  required: [\"id\", \"order_id\", \"message\"],",
-							"  additionalProperties: true,",
-							"};",
-							"",
-							"console.log('RESPONSE', JSON.stringify(json));",
-							"",
-							"pm.test(\"Status code is 200\", function () {",
-							"    pm.response.to.have.status(200);",
-							"});",
-							"",
-							"pm.test(\"Content-Type header is application/json\", () => {",
-							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
-							"});",
-							"",
-							"pm.test(\"Notification was received correctly for user\", () => {",
-							"  var json = pm.response.json();",
-							"  pm.expect(tv4.validate(json, notificationSchema)).to.eql(true);",
-							"  var orderId = pm.collectionVariables.get(\"orderId\");",
-							"  pm.expect(json.order_id).to.eql(orderId);",
-							"  pm.expect(json.message).to.eql(`Order ${orderId} was paid successfully`);",
-							"});",
-							"",
-							"postman.setNextRequest('Create order with not enough amount of money');"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "{{currentUserToken}}",
-							"type": "string"
-						}
-					]
-				},
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "{{notificationsUrl}}/api/v1/notifications/{{orderId}}",
-					"host": [
-						"{{notificationsUrl}}"
-					],
-					"path": [
-						"api",
-						"v1",
-						"notifications",
-						"{{orderId}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "Update User balance",
 			"event": [
 				{
@@ -417,7 +202,7 @@
 							"  pm.collectionVariables.set(\"userBalance\", json.balance);",
 							"});",
 							"",
-							"postman.setNextRequest('Create order with enough amount of money');"
+							"postman.setNextRequest('Create order');"
 						],
 						"type": "text/javascript"
 					}
@@ -460,7 +245,7 @@
 			"response": []
 		},
 		{
-			"name": "Create order with enough amount of money",
+			"name": "Create order",
 			"event": [
 				{
 					"listen": "test",
@@ -510,7 +295,7 @@
 							"  setTimeout(function(){}, 1000);",
 							"});",
 							"",
-							"postman.setNextRequest('Check balance after first payment');"
+							"postman.setNextRequest('Check balance after 1st attempt');"
 						],
 						"type": "text/javascript"
 					}
@@ -531,7 +316,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"items\": [{\"id\": 1, \"amount\": 1}, {\"id\": 2, \"amount\": 2}, {\"id\": 3, \"amount\": 1}]}",
+					"raw": "{\"items\": [{\"id\": 1, \"amount\": 1}, {\"id\": 2, \"amount\": 1}]}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -553,7 +338,219 @@
 			"response": []
 		},
 		{
-			"name": "Create order with not enough amount of money",
+			"name": "Check balance after 1st attempt",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json = pm.response.json();",
+							"var userSchema = {",
+							"  type: \"object\",",
+							"  properties: {",
+							"    id: {type: \"integer\"},",
+							"    user_id: {type: \"integer\"},",
+							"    balance: {type: \"integer\"},",
+							"  },",
+							"  required: [\"id\", \"user_id\", \"balance\"],",
+							"  additionalProperties: true,",
+							"};",
+							"",
+							"console.log('RESPONSE', JSON.stringify(json));",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type header is application/json\", () => {",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
+							"});",
+							"",
+							"pm.test(\"Validate response\", () => {",
+							"  var json = pm.response.json();",
+							"  pm.expect(tv4.validate(json, userSchema)).to.eql(true);",
+							"});",
+							"",
+							"pm.test(\"Balance was received correctly for user\", () => {",
+							"  var json = pm.response.json();",
+							"  var userBalance = pm.collectionVariables.get(\"userBalance\");",
+							"  var orderPrice = pm.collectionVariables.get(\"orderPrice\");",
+							"  pm.expect(userBalance - orderPrice).to.eql(json.balance);",
+							"  pm.collectionVariables.set(\"userBalance\", userBalance - orderPrice);",
+							"});",
+							"",
+							"postman.setNextRequest('Create same order');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{currentUserToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{billingUrl}}/api/v1/balance",
+					"host": [
+						"{{billingUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"balance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create same order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json = pm.response.json();",
+							"",
+							"console.log('REQUEST', pm.request.body.raw);",
+							"console.log('RESPONSE', JSON.stringify(json));",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type header is application/json\", () => {",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
+							"});",
+							"",
+							"pm.test(\"Check result\", () => {",
+							"  var json = pm.response.json();",
+							"  pm.expect(json.code).to.eql(409);",
+							"  pm.expect(json.message).to.eql('Current order is processing');",
+							"});",
+							"",
+							"postman.setNextRequest('Check balance after 2nd attempt');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{currentUserToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"items\": [{\"id\": 1, \"amount\": 1}, {\"id\": 2, \"amount\": 1}]}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ordersUrl}}/api/v1/orders",
+					"host": [
+						"{{ordersUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check balance after 2nd attempt",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json = pm.response.json();",
+							"var userSchema = {",
+							"  type: \"object\",",
+							"  properties: {",
+							"    id: {type: \"integer\"},",
+							"    user_id: {type: \"integer\"},",
+							"    balance: {type: \"integer\"},",
+							"  },",
+							"  required: [\"id\", \"user_id\", \"balance\"],",
+							"  additionalProperties: true,",
+							"};",
+							"",
+							"console.log('RESPONSE', JSON.stringify(json));",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type header is application/json\", () => {",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
+							"});",
+							"",
+							"pm.test(\"Balance was not changed\", () => {",
+							"  var json = pm.response.json();",
+							"  pm.expect(tv4.validate(json, userSchema)).to.eql(true);",
+							"  var userBalance = pm.collectionVariables.get(\"userBalance\");",
+							"  pm.expect(userBalance).to.eql(json.balance);",
+							"});",
+							"",
+							"postman.setNextRequest('Create another order');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{currentUserToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{billingUrl}}/api/v1/balance",
+					"host": [
+						"{{billingUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"balance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create another order",
 			"event": [
 				{
 					"listen": "test",
@@ -598,9 +595,12 @@
 							"  pm.expect(tv4.validate(json, orderSchema)).to.eql(true);",
 							"  pm.collectionVariables.set(\"orderPrice\", json.price);",
 							"  pm.collectionVariables.set(\"orderId\", json.id);",
+							"",
+							"  // Artificial delay to allow updating the balance",
+							"  setTimeout(function(){}, 1000);",
 							"});",
 							"",
-							"postman.setNextRequest('Check balance after second payment');"
+							"postman.setNextRequest('Check balance after 3rd attempt');"
 						],
 						"type": "text/javascript"
 					}
@@ -621,7 +621,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\"items\": [{\"id\": 1, \"amount\": 1}, {\"id\": 2, \"amount\": 2}, {\"id\": 3, \"amount\": 1}]}",
+					"raw": "{\"items\": [{\"id\": 1, \"amount\": 1}, {\"id\": 3, \"amount\": 1}]}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -643,21 +643,21 @@
 			"response": []
 		},
 		{
-			"name": "Check notification after second payment",
+			"name": "Check balance after 3rd attempt",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
 						"exec": [
 							"var json = pm.response.json();",
-							"var notificationSchema = {",
+							"var userSchema = {",
 							"  type: \"object\",",
 							"  properties: {",
 							"    id: {type: \"integer\"},",
-							"    order_id: {type: \"integer\"},",
-							"    message: {type: \"string\"},",
+							"    user_id: {type: \"integer\"},",
+							"    balance: {type: \"integer\"},",
 							"  },",
-							"  required: [\"id\", \"order_id\", \"message\"],",
+							"  required: [\"id\", \"user_id\", \"balance\"],",
 							"  additionalProperties: true,",
 							"};",
 							"",
@@ -671,12 +671,12 @@
 							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
 							"});",
 							"",
-							"pm.test(\"Notification was received correctly for user\", () => {",
+							"pm.test(\"Balance was changed\", () => {",
 							"  var json = pm.response.json();",
-							"  pm.expect(tv4.validate(json, notificationSchema)).to.eql(true);",
-							"  var orderId = pm.collectionVariables.get(\"orderId\");",
-							"  pm.expect(json.order_id).to.eql(orderId);",
-							"  pm.expect(json.message).to.eql(`There was a following error during paying for the order ${orderId}: NOT_ENOUGH_MONEY`);",
+							"  var userBalance = pm.collectionVariables.get(\"userBalance\");",
+							"  var orderPrice = pm.collectionVariables.get(\"orderPrice\");",
+							"  pm.expect(userBalance - orderPrice).to.eql(json.balance);",
+							"  pm.collectionVariables.set(\"userBalance\", userBalance - orderPrice);",
 							"});"
 						],
 						"type": "text/javascript"
@@ -697,15 +697,14 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{notificationsUrl}}/api/v1/notifications/{{orderId}}",
+					"raw": "{{billingUrl}}/api/v1/balance",
 					"host": [
-						"{{notificationsUrl}}"
+						"{{billingUrl}}"
 					],
 					"path": [
 						"api",
 						"v1",
-						"notifications",
-						"{{orderId}}"
+						"balance"
 					]
 				}
 			},
@@ -739,7 +738,7 @@
 		},
 		{
 			"key": "authUrl",
-			"value": "http://arch.homework/auth",
+			"value": "http://localhost:8002",
 			"type": "string"
 		},
 		{
@@ -748,7 +747,7 @@
 		},
 		{
 			"key": "billingUrl",
-			"value": "http://arch.homework/billing",
+			"value": "http://localhost:8003",
 			"type": "string"
 		},
 		{
@@ -761,7 +760,7 @@
 		},
 		{
 			"key": "ordersUrl",
-			"value": "http://arch.homework/orders",
+			"value": "http://localhost:8004",
 			"type": "string"
 		},
 		{
@@ -778,7 +777,7 @@
 		},
 		{
 			"key": "notificationsUrl",
-			"value": "http://arch.homework/notifications",
+			"value": "http://localhost:8005",
 			"type": "string"
 		}
 	]

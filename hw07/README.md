@@ -40,3 +40,14 @@ To run tests:
 ```bash
 ./hw07-k8s-service.sh stop
 ```
+
+### Troubleshooting
+1. Sometimes I got an error during starting the `nginx-ingress` API Gateway:
+```
+Error: Internal error occurred: failed calling webhook "validate.nginx.ingress.kubernetes.io": Post "https://ingress-nginx-controller-admission.hw07.svc:443/networking/v1beta1/ingresses?timeout=10s": dial tcp 10.100.233.18:443: connect: connection refused
+```
+
+To solve this issue you need to launch
+```
+kubectl delete -A ValidatingWebhookConfiguration ingress-nginx-admission
+```

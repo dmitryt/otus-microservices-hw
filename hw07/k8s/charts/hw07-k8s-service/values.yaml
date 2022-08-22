@@ -11,7 +11,7 @@ authImage:
   tag: "v0.0.1"
 
 ordersImage:
-  repository: greml1n/otus-microservices-hw06-orders
+  repository: greml1n/otus-microservices-hw07-orders
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: "v0.0.1"
@@ -107,7 +107,7 @@ affinity: {}
 config:
   env: 'app-config'
   secrets: 'app-secrets'
-  namespace: hw06
+  namespace: hw07
 
 env:
   HOST: 0.0.0.0

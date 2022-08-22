@@ -38,9 +38,11 @@ function dropRabbitMq {
 function startService {
     echo "Installing Namespace...."
     kubectl create namespace $NAMESPACE
-    installDB
     installRabbitMq
+    installDB
     startApiGateway
+    # artificial delay to start RabbitMQ
+    sleep 30
     echo "Starting service...."
     helm upgrade --install --namespace $NAMESPACE $RELEASE_NAME $CHART_DIR
     echo "Starting service....Done"

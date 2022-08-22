@@ -2,16 +2,38 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import { v4 as uuidv4 } from 'uuid';
 import config from '../../config';
 import { FastifyInstance } from '../../plugins';
-import { sendToExchange } from '../../utils';
+import { createConflictError } from '../../plugins/errors';
+import { hash, sendToExchange } from '../../utils';
 import { IUserModel, IOrderPayload } from './schema';
 
 export const createOrder = (app: FastifyInstance) => async (req: FastifyRequest<any>, res: FastifyReply) => {
   const payload = req.body as IOrderPayload;
   const userId = (req.user as IUserModel).id;
-  const [{ id: orderId }] = await app.knex!
-    .insert({ user_id: userId, status: 'New' })
-    .into('orders')
-    .returning('id');
+  const fingerprint = hash({...payload, userId });
+  let orderId = -1;
+  try {
+    await app.knex!.transaction(async trx => {
+      await trx('transaction_locks')
+      // remove all items, which were inserted earlier, than 5 minutes ago
+      .where('inserted_at', '<', new Date(Date.now() - 5*60*1000).toISOString())
+      .del();
+
+      await trx
+      .insert({ hash: fingerprint })
+      .into('transaction_locks');
+
+      [{ id: orderId }] = await trx
+      .insert({ user_id: userId, status: 'New' })
+      .into('orders')
+      .returning('id');
+    });
+  } catch (e) {
+    const idempotentError = 'insert into "transaction_locks" ("hash") values ($1) - duplicate key value violates unique constraint "hash_unique"';
+    if ((e as Error).message === idempotentError) {
+      throw createConflictError('Current order is processing');
+    }
+    throw e;
+  }
   try {
     await Promise.all(
       payload.items.map(({ id, amount }) => {

@@ -38,6 +38,11 @@ export const createForbiddenError = (msg: string) => {
   return new Error();
 };
 
+export const createConflictError = (msg: string) => {
+  const Error = createError('Conflict', msg, 409);
+  return new Error();
+};
+
 export const notFoundErrorHandler = (app: FastifyInstance) => {
   const handler = errorHandler(app);
   return (req: FastifyRequest<any>, res: FastifyReply) => handler(createNotFoundError(), req, res);
