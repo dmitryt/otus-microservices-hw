@@ -21,6 +21,7 @@ const cfg: IConfig = {
     queues: {
       users: 'users',
       orders: 'orders',
+      orderCreated: 'orderCreated',
     },
     exchanges: {
       orders: 'ordersExchange',

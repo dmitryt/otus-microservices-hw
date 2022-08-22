@@ -12,11 +12,16 @@ const fastify = Fastify({
 const appVersion = 'v1';
 const rootPath = `/api/${appVersion}`;
 
+const publicRoutes = [
+  `${rootPath}/health`,
+  '/favicon.ico',
+];
+
 /**
  * Run the server!
  */
 const start = async () => {
-  await initPlugins(fastify);
+  await initPlugins(fastify, publicRoutes);
   await initRoutes(fastify, { rootPath });
   try {
     await fastify.listen({ port: config.port, host: config.host });

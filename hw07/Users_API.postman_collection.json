@@ -738,7 +738,7 @@
 		},
 		{
 			"key": "authUrl",
-			"value": "http://localhost:8002",
+			"value": "http://arch.homework/auth",
 			"type": "string"
 		},
 		{
@@ -747,7 +747,7 @@
 		},
 		{
 			"key": "billingUrl",
-			"value": "http://localhost:8003",
+			"value": "http://arch.homework/billing",
 			"type": "string"
 		},
 		{
@@ -760,7 +760,7 @@
 		},
 		{
 			"key": "ordersUrl",
-			"value": "http://localhost:8004",
+			"value": "http://arch.homework/orders",
 			"type": "string"
 		},
 		{
@@ -777,7 +777,7 @@
 		},
 		{
 			"key": "notificationsUrl",
-			"value": "http://localhost:8005",
+			"value": "http://arch.homework/notifications",
 			"type": "string"
 		}
 	]

@@ -9,7 +9,7 @@ import { Knex } from 'knex';
 
 export type FastifyInstance = FastifyInstanceOrig & { knex?: Knex };
 
-const init = async (app: FastifyInstanceOrig) => {
+const init = async (app: FastifyInstanceOrig, publicRoutes?: string[]) => {
   const {user, pass, host, port, dbName } = config.db || {};
   const connection = `postgres://${user}:${pass}@${host}:${port}/${dbName}`;
   const options = {
@@ -22,7 +22,7 @@ const init = async (app: FastifyInstanceOrig) => {
   app.setNotFoundHandler(notFoundErrorHandler(app));
   await initKnex(app, options);
   await initAmqp(app);
-  await initAuth(app as FastifyInstance);
+  await initAuth(app as FastifyInstance, publicRoutes);
 };
 
 export default init;
