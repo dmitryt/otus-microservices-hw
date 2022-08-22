@@ -3,7 +3,7 @@ import { IConfig } from './types';
 const cfg: IConfig = {
   secret: 'devsecretdevsecretdevsecretdevsecretdevsecretdevsecret',
   host: 'localhost',
-  port: 8003,
+  port: 8004,
 
   db: {
     host: 'localhost',
@@ -20,8 +20,6 @@ const cfg: IConfig = {
     vhost: '',
     queues: {
       users: 'users',
-      orders: 'orders',
-      orderCreated: 'orderCreated',
     },
     exchanges: {
       orders: 'ordersExchange',

@@ -41,7 +41,13 @@ const initRoutes = (app: FastifyInstance) => [
         }
       });
     };
-    subscribeToExchange(app, exchange, ['ORDER_CREATED'], handler);
+    subscribeToExchange(
+      app,
+      exchange,
+      ['ORDER_CREATED'],
+      handler,
+      config.amqp.queues.orderCreated,
+    );
   }
 ];
 

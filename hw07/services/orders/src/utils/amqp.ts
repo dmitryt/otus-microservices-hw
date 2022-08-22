@@ -24,7 +24,7 @@ export const subscribeToQueue = (app: FastifyInstance, queueName: string, handle
   });
 };
 
-export const subscribeToExchange = async (
+export const subscribeToExchange = (
   app: FastifyInstance,
   exchange: string,
   types: string[],
@@ -42,7 +42,6 @@ export const subscribeToExchange = async (
 
   if (assertion) {
     const { queue } = assertion;
-
     types.forEach((type) => {
       channel.bindQueue(queue, exchange, type);
     });

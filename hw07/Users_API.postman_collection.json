@@ -1,0 +1,784 @@
+{
+	"info": {
+		"_postman_id": "26b890ee-0f2a-4744-b76c-ce71cef7350a",
+		"name": "Users API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16198250"
+	},
+	"item": [
+		{
+			"name": "Register User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json = pm.response.json();",
+							"var userSchema = {",
+							"  type: \"object\",",
+							"  properties: {",
+							"    id: {type: \"integer\"},",
+							"    username: {type: \"string\"},",
+							"    email: {type: \"string\"},",
+							"    phone: {type: \"string\"},",
+							"    first_name: {type: \"string\"},",
+							"    last_name: {type: \"string\"},",
+							"    balance: {type: \"integer\"},",
+							"  },",
+							"  required: [\"id\", \"username\"],",
+							"  additionalProperties: false,",
+							"};",
+							"",
+							"console.log('REQUEST', pm.request.body.raw);",
+							"console.log('RESPONSE', JSON.stringify(json));",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type header is application/json\", () => {",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
+							"});",
+							"",
+							"pm.test(\"Response contains user object\", () => {",
+							"  pm.expect(tv4.validate(json, userSchema)).to.eql(true);",
+							"pm.collectionVariables.set(\"user\", request.data); ",
+							"});",
+							"",
+							"postman.setNextRequest('Login User');"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"{{$randomUserName}}\", \"password\": \"{{$randomPassword}}\", \"email\": \"{{$randomEmail}}\", \"phone\": \"{{$randomPhoneNumber}}\", \"first_name\": \"{{$randomFirstName}}\", \"last_name\": \"{{$randomLastName}}\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{authUrl}}/v1/signup",
+					"host": [
+						"{{authUrl}}"
+					],
+					"path": [
+						"v1",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json = pm.response.json();",
+							"var loginSchema = {",
+							"  type: \"object\",",
+							"  properties: {",
+							"    token: {type: \"string\"}",
+							"  },",
+							"  required: [\"token\"],",
+							"  additionalProperties: false,",
+							"};",
+							"",
+							"console.log('REQUEST', pm.request.body.raw);",
+							"console.log('RESPONSE', JSON.stringify(json));",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type header is application/json\", () => {",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
+							"});",
+							"",
+							"pm.test(\"Response contains token\", () => {",
+							"  var json = pm.response.json();",
+							"  pm.expect(tv4.validate(json, loginSchema)).to.eql(true);",
+							"  pm.collectionVariables.set(\"currentUsername\", pm.variables.get(\"username\"));",
+							"  pm.collectionVariables.set(\"currentUserToken\", json.token);",
+							"});",
+							"",
+							"postman.setNextRequest('Update User balance');"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var user1 = JSON.parse(pm.collectionVariables.get(\"user\"));",
+							"pm.variables.set(\"username\", user1.username);",
+							"pm.variables.set(\"password\", user1.password);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"username\": \"{{username}}\", \"password\": \"{{password}}\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{authUrl}}/v1/signin",
+					"host": [
+						"{{authUrl}}"
+					],
+					"path": [
+						"v1",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User balance",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json = pm.response.json();",
+							"var userSchema = {",
+							"  type: \"object\",",
+							"  properties: {",
+							"    id: {type: \"integer\"},",
+							"    user_id: {type: \"integer\"},",
+							"    balance: {type: \"integer\"},",
+							"  },",
+							"  required: [\"id\", \"user_id\", \"balance\"],",
+							"  additionalProperties: true,",
+							"};",
+							"",
+							"console.log('REQUEST', pm.request.body.raw);",
+							"console.log('RESPONSE', JSON.stringify(json));",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type header is application/json\", () => {",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
+							"});",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Balance was updated correctly for user\", () => {",
+							"  var json = pm.response.json();",
+							"  pm.expect(tv4.validate(json, userSchema)).to.eql(true);",
+							"  pm.collectionVariables.set(\"userBalance\", json.balance);",
+							"});",
+							"",
+							"postman.setNextRequest('Create order');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{currentUserToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"amount\": 1000}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{billingUrl}}/api/v1/balance",
+					"host": [
+						"{{billingUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"balance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json = pm.response.json();",
+							"",
+							"var orderSchema = {",
+							"  type: \"object\",",
+							"  properties: {",
+							"    id: {type: \"integer\"},",
+							"    price: {type: \"integer\"},",
+							"    userId: {type: \"integer\"},",
+							"    items: {",
+							"        type: \"array\",",
+							"        items: [{",
+							"            properties: {",
+							"                id: {type: \"integer\"},",
+							"                amount: {type: \"integer\"},",
+							"                price: {type: \"integer\"},",
+							"            }",
+							"        }]",
+							"    },",
+							"  },",
+							"  required: [\"id\", \"userId\", \"price\"],",
+							"  additionalProperties: true,",
+							"};",
+							"",
+							"console.log('REQUEST', pm.request.body.raw);",
+							"console.log('RESPONSE', JSON.stringify(json));",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type header is application/json\", () => {",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
+							"});",
+							"",
+							"pm.test(\"Check result\", () => {",
+							"  var json = pm.response.json();",
+							"  pm.expect(tv4.validate(json, orderSchema)).to.eql(true);",
+							"  pm.collectionVariables.set(\"orderPrice\", json.price);",
+							"  pm.collectionVariables.set(\"orderId\", json.id);",
+							"",
+							"  // Artificial delay to allow updating the balance",
+							"  setTimeout(function(){}, 1000);",
+							"});",
+							"",
+							"postman.setNextRequest('Check balance after 1st attempt');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{currentUserToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"items\": [{\"id\": 1, \"amount\": 1}, {\"id\": 2, \"amount\": 1}]}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ordersUrl}}/api/v1/orders",
+					"host": [
+						"{{ordersUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check balance after 1st attempt",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json = pm.response.json();",
+							"var userSchema = {",
+							"  type: \"object\",",
+							"  properties: {",
+							"    id: {type: \"integer\"},",
+							"    user_id: {type: \"integer\"},",
+							"    balance: {type: \"integer\"},",
+							"  },",
+							"  required: [\"id\", \"user_id\", \"balance\"],",
+							"  additionalProperties: true,",
+							"};",
+							"",
+							"console.log('RESPONSE', JSON.stringify(json));",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type header is application/json\", () => {",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
+							"});",
+							"",
+							"pm.test(\"Validate response\", () => {",
+							"  var json = pm.response.json();",
+							"  pm.expect(tv4.validate(json, userSchema)).to.eql(true);",
+							"});",
+							"",
+							"pm.test(\"Balance was received correctly for user\", () => {",
+							"  var json = pm.response.json();",
+							"  var userBalance = pm.collectionVariables.get(\"userBalance\");",
+							"  var orderPrice = pm.collectionVariables.get(\"orderPrice\");",
+							"  pm.expect(userBalance - orderPrice).to.eql(json.balance);",
+							"  pm.collectionVariables.set(\"userBalance\", userBalance - orderPrice);",
+							"});",
+							"",
+							"postman.setNextRequest('Create same order');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{currentUserToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{billingUrl}}/api/v1/balance",
+					"host": [
+						"{{billingUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"balance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create same order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json = pm.response.json();",
+							"",
+							"console.log('REQUEST', pm.request.body.raw);",
+							"console.log('RESPONSE', JSON.stringify(json));",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type header is application/json\", () => {",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
+							"});",
+							"",
+							"pm.test(\"Check result\", () => {",
+							"  var json = pm.response.json();",
+							"  pm.expect(json.code).to.eql(409);",
+							"  pm.expect(json.message).to.eql('Current order is processing');",
+							"});",
+							"",
+							"postman.setNextRequest('Check balance after 2nd attempt');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{currentUserToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"items\": [{\"id\": 1, \"amount\": 1}, {\"id\": 2, \"amount\": 1}]}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ordersUrl}}/api/v1/orders",
+					"host": [
+						"{{ordersUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check balance after 2nd attempt",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json = pm.response.json();",
+							"var userSchema = {",
+							"  type: \"object\",",
+							"  properties: {",
+							"    id: {type: \"integer\"},",
+							"    user_id: {type: \"integer\"},",
+							"    balance: {type: \"integer\"},",
+							"  },",
+							"  required: [\"id\", \"user_id\", \"balance\"],",
+							"  additionalProperties: true,",
+							"};",
+							"",
+							"console.log('RESPONSE', JSON.stringify(json));",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type header is application/json\", () => {",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
+							"});",
+							"",
+							"pm.test(\"Balance was not changed\", () => {",
+							"  var json = pm.response.json();",
+							"  pm.expect(tv4.validate(json, userSchema)).to.eql(true);",
+							"  var userBalance = pm.collectionVariables.get(\"userBalance\");",
+							"  pm.expect(userBalance).to.eql(json.balance);",
+							"});",
+							"",
+							"postman.setNextRequest('Create another order');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{currentUserToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{billingUrl}}/api/v1/balance",
+					"host": [
+						"{{billingUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"balance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create another order",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json = pm.response.json();",
+							"",
+							"var orderSchema = {",
+							"  type: \"object\",",
+							"  properties: {",
+							"    id: {type: \"integer\"},",
+							"    price: {type: \"integer\"},",
+							"    userId: {type: \"integer\"},",
+							"    items: {",
+							"        type: \"array\",",
+							"        items: [{",
+							"            properties: {",
+							"                id: {type: \"integer\"},",
+							"                amount: {type: \"integer\"},",
+							"                price: {type: \"integer\"},",
+							"            }",
+							"        }]",
+							"    },",
+							"  },",
+							"  required: [\"id\", \"userId\", \"price\"],",
+							"  additionalProperties: true,",
+							"};",
+							"",
+							"console.log('REQUEST', pm.request.body.raw);",
+							"console.log('RESPONSE', JSON.stringify(json));",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type header is application/json\", () => {",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
+							"});",
+							"",
+							"pm.test(\"Check result\", () => {",
+							"  var json = pm.response.json();",
+							"  pm.expect(tv4.validate(json, orderSchema)).to.eql(true);",
+							"  pm.collectionVariables.set(\"orderPrice\", json.price);",
+							"  pm.collectionVariables.set(\"orderId\", json.id);",
+							"",
+							"  // Artificial delay to allow updating the balance",
+							"  setTimeout(function(){}, 1000);",
+							"});",
+							"",
+							"postman.setNextRequest('Check balance after 3rd attempt');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{currentUserToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"items\": [{\"id\": 1, \"amount\": 1}, {\"id\": 3, \"amount\": 1}]}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{ordersUrl}}/api/v1/orders",
+					"host": [
+						"{{ordersUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check balance after 3rd attempt",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var json = pm.response.json();",
+							"var userSchema = {",
+							"  type: \"object\",",
+							"  properties: {",
+							"    id: {type: \"integer\"},",
+							"    user_id: {type: \"integer\"},",
+							"    balance: {type: \"integer\"},",
+							"  },",
+							"  required: [\"id\", \"user_id\", \"balance\"],",
+							"  additionalProperties: true,",
+							"};",
+							"",
+							"console.log('RESPONSE', JSON.stringify(json));",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Content-Type header is application/json\", () => {",
+							"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');",
+							"});",
+							"",
+							"pm.test(\"Balance was changed\", () => {",
+							"  var json = pm.response.json();",
+							"  var userBalance = pm.collectionVariables.get(\"userBalance\");",
+							"  var orderPrice = pm.collectionVariables.get(\"orderPrice\");",
+							"  pm.expect(userBalance - orderPrice).to.eql(json.balance);",
+							"  pm.collectionVariables.set(\"userBalance\", userBalance - orderPrice);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{currentUserToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{billingUrl}}/api/v1/balance",
+					"host": [
+						"{{billingUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"balance"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://arch.homework"
+		},
+		{
+			"key": "authUrl",
+			"value": "http://arch.homework/auth",
+			"type": "string"
+		},
+		{
+			"key": "user",
+			"value": ""
+		},
+		{
+			"key": "billingUrl",
+			"value": "http://arch.homework/billing",
+			"type": "string"
+		},
+		{
+			"key": "currentUsername",
+			"value": ""
+		},
+		{
+			"key": "currentUserToken",
+			"value": ""
+		},
+		{
+			"key": "ordersUrl",
+			"value": "http://arch.homework/orders",
+			"type": "string"
+		},
+		{
+			"key": "userBalance",
+			"value": ""
+		},
+		{
+			"key": "orderPrice",
+			"value": ""
+		},
+		{
+			"key": "orderId",
+			"value": ""
+		},
+		{
+			"key": "notificationsUrl",
+			"value": "http://arch.homework/notifications",
+			"type": "string"
+		}
+	]
+}

@@ -3,11 +3,11 @@
 RELEASE_NAME="prod"
 PG_RELEASE_NAME="pg"
 RABBIT_RELEASE_NAME="rabbit"
-NAMESPACE="hw06"
-CHART_DIR="k8s/charts/hw06-k8s-service"
+NAMESPACE="hw07"
+CHART_DIR="k8s/charts/hw07-k8s-service"
 
 function usage {
-    echo "Usage: hw06-k8s-service {start|stop|installDB|dropDB|test}"
+    echo "Usage: hw07-k8s-service {start|stop|installDB|dropDB|test}"
     exit 1
 }
 
@@ -73,7 +73,7 @@ function stopService {
 
 function portForward {
     echo "Set port forward...."
-    kubectl port-forward service/prod-hw06-k8s-service 8001:8000 --namespace $NAMESPACE &
+    kubectl port-forward service/prod-hw07-k8s-service 8001:8000 --namespace $NAMESPACE &
     echo "Set port forward....Done"
 }
 

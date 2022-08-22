@@ -1,5 +1,6 @@
 import FastifyJwt from '@fastify/jwt';
-import { FastifyInstance, FastifyRequest } from 'fastify';
+import { FastifyRequest } from 'fastify';
+import { FastifyInstance } from '.';
 import config from '../config';
 
 const   init = async (app: FastifyInstance, publicRoutes?: string[]) => {
