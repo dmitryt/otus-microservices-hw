@@ -8,6 +8,9 @@
 
 ## Solution
 
+Solution is based on `transaction_locks` table. When order is created, the fingerprint is generated from payload. Next time, when the same payload comes, it will be skipped.
+All 5 minutes old fingerprints will be removed during the next transaction.
+
 **It's supposed, there are Helm3, Minikube installed on your machine.**
 
 ### Usage
