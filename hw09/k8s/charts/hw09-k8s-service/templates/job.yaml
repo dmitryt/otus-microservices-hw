@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: {{.Values.config.namespace}}
+  name: migrator
+  labels:
+    {{- include "auth-service.labels" . | nindent 4 }}
+spec:
+  template:
+    spec:
+      containers:
+      - name: migrator
+        image: greml1n/otus-microservices-hw07-migrator:v0.0.1
+        envFrom:
+          - configMapRef:
+              name: {{.Values.config.env}}
+          - secretRef:
+              name: {{.Values.config.secrets}}
+      restartPolicy: Never
+  backoffLimit: 4
